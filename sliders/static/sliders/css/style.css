@@ -1,0 +1,74 @@
+* {
+  font-family: HelveticaNeueW01-45Ligh, HelveticaNeueW02-45Ligh, HelveticaNeueW10-45Ligh, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#settings {
+  height: 100%;
+}
+#settings body,
+#settings #wrapper,
+#settings .container,
+#settings .row,
+#settings .d-flex {
+  height: 100%;
+}
+#settings .nav,
+#settings .tabs {
+  background-color: rgba(246, 251, 255, 0.98);
+  height: 100%;
+}
+#settings .nav .nav-link,
+#settings .tabs .nav-link,
+#settings .nav .nav-item,
+#settings .tabs .nav-item {
+  font-size: 14px;
+  color: #2b5672;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  border-radius: 20px;
+}
+#settings .nav .nav-link:hover,
+#settings .tabs .nav-link:hover,
+#settings .nav .nav-item:hover,
+#settings .tabs .nav-item:hover {
+  background-color: #d3edff;
+}
+#settings .nav .nav-link.active,
+#settings .tabs .nav-link.active,
+#settings .nav .nav-item.active,
+#settings .tabs .nav-item.active {
+  background-color: #d3edff;
+  color: #3899ec;
+}
+#settings .tab-content {
+  height: 100%;
+  overflow: scroll;
+}
+#settings .tab-content p {
+  color: #2b5672;
+}
+#settings .tab-content .btn {
+  font-size: 16px;
+  font-family: HelveticaNeueW01-45Ligh, HelveticaNeueW02-45Ligh, HelveticaNeueW10-45Ligh, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  line-height: 16px;
+  padding: 8px 24px;
+  border-radius: 18px;
+}
+#settings .tab-content .btn.btn-primary {
+  background-color: #3899F4;
+  color: #ffffff;
+  border-color: #3899F4;
+}
+#settings .tab-content .btn.btn-primary:hover {
+  background-color: #4eb7f5;
+}
+#settings .tab-content .btn.btn-sm {
+  font-size: 14px;
+  line-height: 14px;
+  padding: 6px 18px;
+}
+#settings .tab-content .baie-image-select img:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}

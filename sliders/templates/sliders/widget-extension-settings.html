@@ -1,0 +1,447 @@
+{% extends 'site-layout.html' %}
+
+{% block content %}
+    <!-- start content -->
+    <div class="container p-0">
+
+        <div class="row">
+            <div class="d-flex align-items-start">
+                <!--Settings Navigation-->
+                <div class="nav flex-column nav-pills p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <button class="nav-link active" id="v-pills-main-tab" 
+                        data-bs-toggle="pill" 
+                        data-bs-target="#v-pills-main" 
+                        type="button" 
+                        role="tab" 
+                        aria-controls="v-pills-main" 
+                        aria-selected="true">
+                        Main
+                    </button>
+                    <button class="nav-link" id="v-pills-images-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#v-pills-images"
+                        type="button"
+                        role="tab"
+                        aria-controls="v-pills-images"
+                        aria-selected="false">
+                        Images
+                    </button>
+                    <button class="nav-link" id="v-pills-options-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#v-pills-options"
+                        type="button"
+                        role="tab"
+                        aria-controls="v-pills-options"
+                        aria-selected="false">
+                        Options
+                    </button>
+                    <hr>
+                    <button class="nav-link" id="v-pills-support-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#v-pills-support"
+                        type="button"
+                        role="tab"
+                        aria-controls="v-pills-support"
+                        aria-selected="false">
+                        Support
+                    </button>
+                    <hr>
+                    <a class="nav-link" 
+                        id="v-pills-upgrade"
+                        href="https://www.wix.com/apps/upgrade/ace631c7-323b-47c9-969f-7f3421515171?appInstanceId={{instance_id}}"
+                        target="_blank">
+                        Upgrade
+                    </a>
+
+                    
+                </div>
+                <!--Tab Content-->
+                <div class="tab-content mx-auto" id="v-pills-tabContent" style="width: 100%;">
+
+                    <!--Main-->
+                    <div class="tab-pane fade show active" id="v-pills-main" role="tabpanel" aria-labelledby="v-pills-main-tab">
+
+                        <div class="container-fluid mt-4 p-3  text-center">
+                            <div class="row">
+                                <div class="col">
+                        
+                                    <p><img src="{% static 'sliders/images/baie-logo.svg' %}" style="border-radius: 70px;" alt="Baie logo" width="70" height="70"/></p>
+                                    <p class="fw-light">Easily compare two images with before-and-after image sliders.</p>
+                                    <button class="btn btn-primary" type="button" role="button" onclick="changeBaieSettingsTab( trigger = '#v-pills-images-tab' )">Add Images</button>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            // Select the given tab by its trigger and shows its associated pane
+                            // Source: https://getbootstrap.com/docs/5.0/components/navs-tabs/#show
+                            function changeBaieSettingsTab( trigger ){
+
+                                // Initialize variables.
+                                var tabTrigger = document.querySelector( trigger )
+                                var tab = new bootstrap.Tab( tabTrigger )
+
+                                // Show the associated tab pane.
+                                tab.show()
+                            }
+                            
+                        </script>
+                    </div>
+                    
+                    <!--Images-->
+                    <div class="tab-pane fade" id="v-pills-images" role="tabpanel" aria-labelledby="v-pills-images-tab">
+
+                        <div class="container-fluid text-bg-light mb-2 px-4 py-3 border-bottom">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="fw-light">Images</h5>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!--Before Image-->
+                        <div id="baie-before-image" 
+                            class="baie-image-select container-fluid px-4 py-3" 
+                            data-baie-image-type="before" 
+                            data-baie-image="{{ before_image }}">
+
+                            <div class="row mb-2">
+                                <div class="col-auto">
+                                    <h6>Before</h6>
+                                </div>
+                                <div class="col" style="text-align: right;">
+                                    <button class="btn btn-primary btn-sm update-baie-images-toggle" type="button">Select Image</button>
+                                </div>
+                            </div>
+
+                            {% if before_image != '' %}
+                            <div class="row">
+                                <div class="col" style="text-align: center;">
+
+                                    <!--Image-->
+                                    <img src="{{ before_image }}" class="img-thumbnail mb-3 update-baie-images-toggle" width="220" height="113" />
+                                    
+                                    <!--Before Label-->
+                                    <div class="input-group mb-2">
+                                        <label for="before_label_text" class="input-group-text">Label:</label>
+                                        <input name="before_label_text"
+                                            type="text"
+                                            id="before-label-text"
+                                            class="form-control update-baie-label-toggle"
+                                            placeholder="Before" 
+                                            aria-label="Before Image Label Text"
+                                            value="{{ before_label_text }}">
+                                    </div>
+                                    
+                                    <!--Alt Text-->
+                                    <div class="input-group">
+                                        <label for="before_alt_text" class="input-group-text">Alt Text:</label>
+                                        <input name="before_alt_text"
+                                            type="text"
+                                            id="before-alt-text"
+                                            class="form-control update-baie-alt-toggle"
+                                            placeholder="Description here." 
+                                            aria-label="Before Image Alt Text"
+                                            value="{{ before_alt_text }}">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <hr />
+
+                        <!--After Image-->
+                        <div id="baie-after-image" 
+                            class="baie-image-select container-fluid px-4 py-3" 
+                            data-baie-image-type="after" 
+                            data-baie-image="{{ after_image }}">
+
+                            <div class="row mb-2">
+                                <div class="col-auto">
+                                    <h6>After</6>
+                                </div>
+                                <div class="col" style="text-align: right;">
+                                    <button class="btn btn-primary btn-sm update-baie-images-toggle" type="button">Select Image</button>
+                                </div>
+                            </div>
+                            
+                            {% if after_image != '' %}
+                            <div class="row">
+                                <div class="col" style="text-align: center;">
+
+                                    <!--Image-->
+                                    <img src="{{ after_image }}" class="img-thumbnail mb-3 update-baie-images-toggle" width="220" height="113" />
+                                    
+                                    <!--After Label-->
+                                    <div class="input-group mb-2">
+                                        <label for="after_label_text" class="input-group-text">Label:</label>
+                                        <input name="after_label_text"
+                                            type="text"
+                                            id="after-label-text"
+                                            class="form-control update-baie-label-toggle"
+                                            placeholder="After" 
+                                            aria-label="After Image Label Text"
+                                            value="{{ after_label_text }}">
+                                    </div>
+                                    
+                                    <!--Alt Text-->
+                                    <div class="input-group">
+                                        <label for="after-alt-text" class="input-group-text">Alt Text:</label>
+                                        <input name="after-alt-text"
+                                            type="text" 
+                                            id="after-alt-text" 
+                                            class="form-control update-baie-alt-toggle"
+                                            placeholder="Description here." 
+                                            aria-label="After Image Alt Text"
+                                            value="{{ after_alt_text }}">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!--Options-->
+                    <div class="tab-pane fade" id="v-pills-options" role="tabpanel" aria-labelledby="v-pills-options-tab">
+                        <div class="container-fluid text-bg-light mb-2 px-4 py-3 border-bottom">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="fw-light">Options</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Slider Offset-->
+                        <div class="container px-4 py-3">
+                            <div class="row">
+                                <div class="col-9">
+                                    <label for="sliderOffsetRange" class="form-label">Slider Offset</label><br>
+                                    <input type="range" class="form-range" id="sliderOffsetRange" onchange="updateBaieExtension()" value="{{ slider_offset }}">
+                                </div>
+                                <div class="col-3">
+                                    <br>
+                                    <p class="fs-5"><span id="sliderOffsetNumber">{{ slider_offset }}</span>%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Orientation-->
+                        <div class="container px-4 py-1">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="sliderOrientation" class="form-label">Slider Orientation</label><br>
+                                    <div class="form-check">
+                                        <input 
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="sliderOrientation"
+                                            id="sliderOrientation1"
+                                            value="horizontal"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if slider_orientation=='horizontal' %}
+                                            checked
+                                            {%endif%}
+                                        >
+                                        <label class="form-check-label" for="sliderOrientation1">
+                                          Horizontal
+                                        </label>
+                                      </div>
+                                      <div class="form-check">
+                                        <input 
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="sliderOrientation"
+                                            id="sliderOrientation2"
+                                            value="vertical"
+                                            onchange="updateBaieExtension( this )" 
+                                            {% if slider_orientation=='vertical' %}
+                                            checked
+                                            {%endif%}
+                                        >
+                                        <label class="form-check-label" for="sliderOrientation2">
+                                          Vertical
+                                        </label>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--Support-->
+                    <div class="tab-pane fade" id="v-pills-support" role="tabpanel" aria-labelledby="v-pills-support-tab">
+                        <div class="container-fluid text-bg-light mb-2 px-4 py-3 border-bottom">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="fw-light">Support</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid px-4 py-3">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="fw-light"><strong>Developer</strong>: Bolton Studios LLC</p>
+                                    <p class="fw-light"><strong>Email</strong>: <a href="mailto:support@boltonstudios.com">support@boltonstudios.com</a></p>
+                                    <p class="fw-light"><strong>Website</strong>: <a href="https://boltonstudios.com" target="_blank">https://boltonstudios.com</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid text-bg-light mb-2 px-4 py-3 border-top border-bottom">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="fw-light">Troubleshooting</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid px-4 py-3">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="fw-light"><strong>Extension ID</strong>: {{extension_id}}</p>
+                                    <p class="fw-light"><strong>Instance ID</strong>: {{instance_id}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        <script>
+            
+            // Define the function to update image elements with user's media selections.
+            function updateBaieImages( event, element ){
+
+                console.log( "updateBaieImages() called." )
+
+                // Declare variables.
+                var imageURL = '';
+                var imageType = element.dataset.baieImageType;
+                var thumbnailImage = element.querySelector( '.img-thumbnail' );
+
+                // openMediaDialog(mediaType, multiSelect, onSuccess, \[onCancel\])
+                // https://dev.wix.com/api/iframe-sdk/sdk/wix.settings#sdk_wix.settings_openmediadialog
+                Wix.Settings.openMediaDialog(
+                    Wix.Settings.MediaType.IMAGE, // mediaType
+                    false, // multiSelect
+                    function( data ){
+                        // onSuccess
+                        // fullSizeImageURL = Wix.Utils.Media.getImageUrl( data.relativeUri );
+                        thumbnailURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 220, 113 )
+                        imageURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 637, 328 )
+                        
+                        // Add the image URL to the data attribute.
+                        element.dataset.baieImage = imageURL;
+
+                        // Update the thumbnail with the selected image URL.
+                        thumbnailImage.src = thumbnailURL;
+
+                        // Update the extension to reflect the settings changes.
+                        updateBaieExtension()
+                    }
+                );
+            }
+
+            // Define the function to update the widget extension with user's Settings inputs.
+            function updateBaieExtension(){
+
+                console.log( "updateBaieExtension() called." )
+                
+                // Initialize variables.
+                var beforeImage     = document.getElementById( "baie-before-image" ).dataset.baieImage;
+                var beforeLabelText   = document.getElementById( "before-label-text" ).value;
+                var beforeAltText   = document.getElementById( "before-alt-text" ).value;
+                var afterImage      = document.getElementById( "baie-after-image" ).dataset.baieImage;
+                var afterLabelText    = document.getElementById( "after-label-text" ).value;
+                var afterAltText    = document.getElementById( "after-alt-text" ).value;
+                var sliderOffset    = document.getElementById( "sliderOffsetRange" ).value;
+                var sliderOffsetFloat = parseFloat( sliderOffset ) / 100;
+                var sliderOrientation = document.getElementsByName( "sliderOrientation" );
+
+                // Extract value from Slider Orientation radio options.
+                // Iterate over the radio options.
+                for( i = 0; i < sliderOrientation.length; i++ ){
+
+                    // If the current radio option is checked.
+                    if( sliderOrientation[ i ].checked ){
+
+                        // Store the value of the checked option.
+                        sliderOrientation = sliderOrientation[ i ].value;
+                    }
+                }
+
+                // Prepare message.
+                var message = {
+                    beforeImage: beforeImage,
+                    beforeLabelText: beforeLabelText,
+                    beforeAltText: beforeAltText,
+                    afterImage: afterImage,
+                    afterLabelText: afterLabelText,
+                    afterAltText: afterAltText,
+                    sliderOffset: sliderOffset,
+                    sliderOffsetFloat: sliderOffsetFloat,
+                    sliderOrientation: sliderOrientation
+                };
+
+                // Manipulate settings panel.
+                document.getElementById( "sliderOffsetNumber" ).innerHTML = sliderOffset;
+
+                // Print status update to the console.
+                console.log( "updateBaieExtension() called." );
+                console.log( "message = " );
+                console.log( message );
+                
+                // Send message to the widget extension iframe.
+                Wix.Settings.triggerSettingsUpdatedEvent( message, '{{extension_id}}' );
+            }
+
+            // Get elements to pair with event listeners.
+            var updateBaieImagesToggles = document.getElementsByClassName( "update-baie-images-toggle" );
+            
+            // Iterate over the elements found.
+            for( let i = 0; i < updateBaieImagesToggles.length; i++ ){
+
+                // Add a listener for the "click" even to each element.
+                updateBaieImagesToggles[ i ].addEventListener( "click", function( event ){
+
+                    // Get the parent element with the class .baie-image-select,
+                    // which has many data attributes used to toggle changes in the iframe(s).
+                    baieImageSelect = this.closest( ".baie-image-select" );
+
+                    // On click, run the updateBaieImages() function.
+                    updateBaieImages( event, baieImageSelect )
+                });
+            }
+
+            // Get elements to trigger label text changes.
+            var updateBaieLabelToggles = document.getElementsByClassName( "update-baie-label-toggle" );
+            
+            // Iterate over the elements found.
+            for( let i = 0; i < updateBaieLabelToggles.length; i++ ){
+
+                // Add a listener for the "click" event to each element.
+                updateBaieLabelToggles[ i ].addEventListener(  "focusout", function( event ){
+
+                    console.log( "focusout event fired" );
+                    console.log( event.srcElement.value );
+                    updateBaieExtension()
+                });
+            }
+
+            // Get elements to trigger alt text changes.
+            var updateBaieAltToggles = document.getElementsByClassName( "update-baie-alt-toggle" );
+
+            // Iterate over the elements found.
+            for( let i = 0; i < updateBaieAltToggles.length; i++ ){
+
+                // Add a listener for the "click" event to each element.
+                updateBaieAltToggles[ i ].addEventListener(  "focusout", function( event ){
+
+                    console.log( "focusout event fired" );
+                    console.log( event.srcElement.value );
+                    updateBaieExtension()
+                });
+            }
+
+        </script>
+    </div>
+{% endblock %}

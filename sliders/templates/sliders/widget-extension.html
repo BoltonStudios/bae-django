@@ -1,0 +1,200 @@
+{% extends 'site-layout.html' %}
+
+{% block content %}
+    <!-- start content -->
+    <div class="content">
+
+        <div id="{{extension_id}}-twentytwenty" class="twentytwenty-container" 
+            data-slider-id="{{extension_id}}"
+            data-before-image="{{before_image}}"
+            data-before-label-text="{{before_label_text}}"
+            data-before-alt-text="{{before_alt_text}}"
+            data-after-image="{{after_image}}"
+            data-after-label-text="{{after_label_text}}"
+            data-after-alt-text="{{after_alt_text}}"
+            data-slider-offset="{{slider_offset}}"
+            data-slider-offset-float="{{slider_offset_float}}"
+            data-slider-orientation="{{slider_orientation}}"
+        >
+            <!-- The before image is first -->
+            {% if before_image != '' %}
+                <img id="{{extension_id}}-before-image" src="{{ before_image }}" width="637" height="328" alt="{{before_alt_text}}" />
+            {% else %}
+                <img id="{{extension_id}}-before-image" src="{% static 'sliders/images/placeholder-1.svg' %}" width="637" height="328" alt="placeholder" />
+            {% endif %}
+            <!-- The after image is last -->
+            {% if after_image != '' %}
+                <img id="{{extension_id}}-after-image" src="{{ after_image }}" width="637" height="328" alt="{{after_alt_text}}" />
+            {% else %}
+                <img id="{{extension_id}}-after-image" src="{% static 'sliders/images/placeholder-3.svg' %}" width="637" height="328" alt="placeholder" />
+            {% endif %}
+        </div>
+        
+        <ul>
+            <li>Extension ID: {{extension_id}}</li>
+            <li>Before Image: <span id="{{extension_id}}-before-image" class="slider-image">{{before_image}}</span></li>
+            <li>After Image: <span id="{{extension_id}}-after-image" class="slider-image">{{after_image}}</span></li>
+            <li>Slider Offset: <span id="{{extension_id}}-slider-offset" class="slider-offset">{{slider_offset}}</span></li>
+            <li>Slider Offset Float: <span id="{{extension_id}}-slider-offset-float" class="slider-offset-float">{{slider_offset_float}}</span></li>
+        </ul>
+
+        <p id="target-text">Then</p>
+        {% if requests_list %}
+        <h3>Requests</h3>
+
+        <ol>
+           {% for request in requests_list %}
+
+           <li>{{ request }}</li>
+           
+           {% endfor %}
+       </ol>
+       {% endif %}
+
+       <script>
+
+        // Add event listeners as shown here:
+        // https://dev.wix.com/api/iframe-sdk/sdk/wix#sdk_wix_addeventlistener
+        Wix.addEventListener( Wix.Events.SETTINGS_UPDATED, updateWidgetExtension );
+        Wix.addEventListener( Wix.Events.SITE_SAVED, publishWidgetExtension );
+        Wix.addEventListener( Wix.Events.COMPONENT_DELETED, deleteWidgetExtension );
+        
+        // Do something when the user applies new settings.
+        function updateWidgetExtension( e ){
+
+            // Print status to the console.
+            console.log( "updateWidgetExtension called.");
+            console.log( e );
+            
+            // Initialize variables.
+            var slider = document.getElementById( "{{extension_id}}-twentytwenty" );
+            var beforeImage = document.getElementById( "{{extension_id}}-before-image" );
+            var afterImage = document.getElementById( "{{extension_id}}-after-image" );
+
+            // Update data attributes.
+            slider.dataset.beforeImage = e.beforeImage;
+            slider.dataset.beforeLabelText = e.beforeLabelText;
+            slider.dataset.beforeAltText = e.beforeAltText;
+            slider.dataset.afterImage = e.afterImage;
+            slider.dataset.afterLabelText = e.afterLabelText;
+            slider.dataset.afterAltText = e.afterAltText;
+            slider.dataset.sliderOffset = e.sliderOffset;
+            slider.dataset.sliderOffsetFloat = e.sliderOffsetFloat;
+            slider.dataset.sliderOrientation = e.sliderOrientation;
+
+            // Update labels.
+            document.getElementById( "{{extension_id}}-before-image" ).innerHTML = e.beforeImage;
+            document.getElementById( "{{extension_id}}-after-image" ).innerHTML = e.afterImage;
+            document.getElementById( "{{extension_id}}-slider-offset" ).innerHTML = e.sliderOffset;
+            document.getElementById( "{{extension_id}}-slider-offset-float" ).innerHTML = e.sliderOffsetFloat;
+            //document.getElementById( "{{extension_id}}-slider-orientation" ).innerHTML = e.sliderOrientation;
+
+            // Update image attributes.
+            beforeImage.src = e.beforeImage;
+            afterImage.src  = e.afterImage;
+            beforeImage.alt = e.beforeAltText;
+            afterImage.alt  = e.afterAltText;
+
+            // Reset TwentyTwenty elements.
+            jQuery("#{{extension_id}}-twentytwenty").unwrap();
+            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-overlay").remove();
+            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-handle").remove();
+            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-before-label").remove();
+            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-after-label").remove();
+
+            // Reinitialize TwentyTwenty.
+            jQuery("#{{extension_id}}-twentytwenty").twentytwenty({
+                before_label: e.beforeLabelText, // Set a custom before label.
+                after_label: e.afterLabelText, // Set a custom after label.
+                default_offset_pct: e.sliderOffsetFloat, // How much of the before image is visible when the page loads.
+                orientation: e.sliderOrientation // Orientation of the before and after images ('horizontal' or 'vertical')
+            });
+
+            //
+            publishWidgetExtension( e )
+        }
+        
+        // Do something when the user deletes an extension.
+        function deleteWidgetExtension( e ){
+            
+            // Print status to the console.
+            console.log( "deleteWidgetExtension called.");
+            console.log( e );
+
+            fetch( "{% url 'widget_extension' %}", {
+                method: "POST",
+                body: JSON.stringify({
+                    extensionID: "{{extension_id}}",
+                    action: "delete"
+                }),
+                headers: {
+                "Content-type": "application/json; charset=UTF-8"
+                }
+            });
+        }
+        
+        // Do something when the user saves the website.
+        function publishWidgetExtension( e ){
+
+            // Print status to the console.
+            console.log( "publishWidgetExtension called.");
+            console.log( e );
+            
+            // Get the extensions current attribute data.
+            var slider =  document.getElementById( "{{extension_id}}-twentytwenty" );
+            var sliderId = slider.dataset.sliderId;
+            var beforeImage = slider.dataset.beforeImage;
+            var beforeLabelText = slider.dataset.beforeLabelText;
+            var beforeAltText = slider.dataset.beforeAltText;
+            var afterImage = slider.dataset.afterImage;
+            var afterLabelText = slider.dataset.afterLabelText;
+            var afterAltText = slider.dataset.afterAltText;
+            var sliderOffset = slider.dataset.sliderOffset;
+            var sliderOffsetFloat = slider.dataset.sliderOffsetFloat;
+            var sliderOrientation = slider.dataset.sliderOrientation;
+
+            // Send the attribute data to the app in an asynchronous POST request.
+            fetch( "{% url 'widget_extension' %}", {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "publish",
+                    extensionID: sliderId,
+                    siteID: Wix.Utils.getSiteOwnerId(),
+                    userID: Wix.Utils.getUid(),
+                    instanceID: Wix.Utils.getInstanceId(),
+                    beforeImage: beforeImage,
+                    beforeLabelText: beforeLabelText,
+                    beforeAltText: beforeAltText,
+                    afterImage: afterImage,
+                    afterLabelText: afterLabelText,
+                    afterAltText: afterAltText,
+                    sliderOffset: sliderOffset,
+                    sliderOffsetFloat: sliderOffsetFloat,
+                    sliderOrientation: sliderOrientation
+                }),
+                headers: {
+                "Content-type": "application/json; charset=UTF-8"
+                }
+            });
+        }
+       </script>
+
+       <script>
+        // Initialize variables.
+        var beforeLabelText = "{{before_label_text}}"
+        var afterLabelText = "{{after_label_text}}"
+        var sliderOffsetFloat = Number( "{{slider_offset_float}}" )
+        var sliderOrientation = "{{slider_orientation}}"
+
+        // Initialize TwentyTwenty
+        $(function(){
+            $("#{{extension_id}}-twentytwenty").twentytwenty({
+                before_label: beforeLabelText, // Set a custom before label.
+                after_label: afterLabelText, // Set a custom after label.
+                default_offset_pct: sliderOffsetFloat, // How much of the before image is visible when the page loads
+                orientation: sliderOrientation // Orientation of the before and after images ('horizontal' or 'vertical')
+            });
+        });
+       </script>
+    </div>
+{% endblock %}

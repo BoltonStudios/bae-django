@@ -1,0 +1,70 @@
+*{
+    //font: 400 14px/21px HelveticaNeueW01-45Ligh,HelveticaNeueW02-45Ligh,HelveticaNeueW10-45Ligh,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: HelveticaNeueW01-45Ligh,HelveticaNeueW02-45Ligh,HelveticaNeueW10-45Ligh,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+#settings{
+    height: 100%;
+    body,
+    #wrapper,
+    .container,
+    .row,
+    .d-flex{
+        height: 100%;
+    }
+    .nav,
+    .tabs{
+        background-color: rgba(246,251,255,.98);
+        height: 100%;
+        .nav-link,
+        .nav-item{
+            //font-family: HelveticaNeueW01-45Ligh,HelveticaNeueW02-45Ligh,HelveticaNeueW10-45Ligh,Helvetica Neue,Helvetica,Arial,sans-serif;
+            font-size: 14px;
+            color: #2b5672;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            border-radius: 20px;
+            &:hover{
+                background-color: #d3edff;
+            }
+            &.active{
+                background-color: #d3edff;
+                color: #3899ec;
+            }
+        }
+    }
+    .tab-content{
+        height: 100%;
+        overflow: scroll;
+        p{
+            color: #2b5672;
+        }
+        .btn{
+            font-size: 16px;
+            font-family: HelveticaNeueW01-45Ligh,HelveticaNeueW02-45Ligh,HelveticaNeueW10-45Ligh,Helvetica Neue,Helvetica,Arial,sans-serif;
+            font-weight: 300;
+            line-height: 16px;
+            padding: 8px 24px;
+            border-radius: 18px;
+            &.btn-primary{
+                background-color: #3899F4;
+                color: #ffffff;
+                border-color: #3899F4;
+                &:hover{
+                    background-color: #4eb7f5;
+                }
+            }
+            &.btn-sm{
+                font-size: 14px;
+                line-height: 14px;
+                padding: 6px 18px;
+            }
+        }
+        .baie-image-select{
+            img:hover{
+                cursor: pointer;
+                opacity: .8;
+            }
+        }
+    }
+}

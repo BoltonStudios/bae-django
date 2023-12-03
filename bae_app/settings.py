@@ -38,6 +38,7 @@ DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 # Application definition
 
 INSTALLED_APPS = [
+    "sliders.apps.SlidersConfig",
     "polls.apps.PollsConfig",
     "debug_toolbar",
     'django.contrib.admin',
