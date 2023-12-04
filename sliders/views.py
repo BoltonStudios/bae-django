@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.conf import settings
+from bae_app.settings import settings
 from django.templatetags.static import static
 
 # Local imports.
