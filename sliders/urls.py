@@ -12,7 +12,9 @@ from . import views
 app_name = "sliders"
 urlpatterns = [
     path("", views.root, name="index"),
-    path("/app-wix", views.app_wix, name="app_wix"),
-    path("/redirect-wix", views.redirect_wix, name="redirect_wix"),
-    path("/uninstall", views.uninstall, name="uninstall"),
+    path("app-wix/", views.app_wix, name="app_wix"),
+    path("redirect-wix/", views.redirect_wix, name="redirect_wix"),
+    path("uninstall/", views.uninstall, name="uninstall"),
+    path("settings/", views.settings, name="settings"),
+    path("widget/", views.widget, name="widget"),
 ]

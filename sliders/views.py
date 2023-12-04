@@ -12,6 +12,10 @@ import jwt
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.conf import settings
+from django.templatetags.static import static
 
 # Local imports.
 from .models import User, Extension
@@ -54,10 +58,10 @@ def app_wix( request ):
 
     # Construct the app installation URL.
     permission_request_url = "https://www.wix.com/installer/install"
-    app_id = os.getenv( "APP_ID" )
-    redirect_url = 'https://' + request.host + '/redirect-wix'
+    app_id = settings.APP_ID
+    redirect_url = 'https://' + request.META[ 'HTTP_HOST' ] + '/sliders/redirect-wix/'
     redirect_url = urllib.parse.quote( redirect_url, safe='~')
-    token = request.args.get( 'token' )
+    token = request.GET[ 'token' ]
     url = permission_request_url + '?token=' + token + '&state=start'
     url += '&appId=' + app_id + '&redirectUrl=' + redirect_url
 
@@ -84,40 +88,41 @@ def redirect_wix( request ):
     print( "=============================" )
 
     # Get the authorization code from Wix.
-    authorization_code = request.args.get( 'code' )
+    authorization_code = request.GET[ 'code' ]
 
     try:
         print( "Getting Tokens From Wix." )
         print( "=======================" )
 
+        auth_provider_base_url = settings.AUTH_PROVIDER_BASE_URL
+        app_secret = settings.APP_SECRET
+        app_id = settings.APP_ID
+
         # Get a refresh token from Wix.
         refresh_token = json.loads(
             logic.get_tokens_from_wix(
-                request,
                 authorization_code,
-                auth_provider_base_url =os.getenv( 'AUTH_PROVIDER_BASE_URL' ),
-                app_secret = os.getenv( 'APP_SECRET' ),
-                app_id = os.getenv( 'APP_ID' )
+                auth_provider_base_url,
+                app_secret,
+                app_id
             )
         )[ 'refresh_token' ]
 
         # Get an access token from Wix.
         access_token = logic.get_access_token(
-            request,
             refresh_token,
-            auth_provider_base_url = os.getenv( 'AUTH_PROVIDER_BASE_URL' ),
-            app_secret = os.getenv( 'APP_SECRET' ),
-            app_id = os.getenv( 'APP_ID' )
+            auth_provider_base_url,
+            app_secret,
+            app_id
         )
 
         # Get data about the installation of this app on the user's website.
         app_instance = logic.get_app_instance(
-            request,
             refresh_token,
             'https://www.wixapis.com/apps/v1/instance',
-            auth_provider_base_url = os.getenv( 'AUTH_PROVIDER_BASE_URL' ),
-            app_secret = os.getenv( 'APP_SECRET' ),
-            app_id = os.getenv( 'APP_ID' )
+            auth_provider_base_url,
+            app_secret,
+            app_id
         )
 
         # Construct the URL to Completes the OAuth flow.
@@ -133,7 +138,7 @@ def redirect_wix( request ):
         # Search the User table for the instance ID (primary key)
         #Question.objects.filter(pub_date__lte=timezone.now())
         #selected_choice = question.choice_set.get(pk=request.POST["choice"])
-        user_in_db = get_object_or_404(User, pk=instance_id)
+        user_in_db = User.objects.filter( pk=instance_id ).first()
 
         # If the user does not exist in the table...
         if user_in_db is None:
@@ -162,7 +167,7 @@ def redirect_wix( request ):
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-        return HttpResponseRedirect( reverse( redirect_url ) )
+        return HttpResponseRedirect( redirect_url )
 
     except ValueError as err:
         print( "Error getting token from Wix" )
@@ -170,6 +175,7 @@ def redirect_wix( request ):
         return HttpResponseServerError( "{'error':'wixError'}" )
 
 # Remove application files and data for the user (App Uninstalled)
+@method_decorator( csrf_exempt )
 def uninstall( request ):
 
     """
@@ -181,13 +187,16 @@ def uninstall( request ):
 
     # Initialize variables.
     instance_id = ''
-    secret = os.getenv( 'WEBHOOK_PUBLIC_KEY' )
+    secret = settings.WEBHOOK_PUBLIC_KEY
+    auth_provider_base_url = settings.AUTH_PROVIDER_BASE_URL
+    app_secret = settings.APP_SECRET
+    app_id = settings.APP_ID
 
     # If the user submitted a POST request...
     if request.method == 'POST':
 
         # Get the encoded data received.
-        encoded_jwt = request.data
+        encoded_jwt = request.body
 
         # Decode the data using our secret.
         data = jwt.decode( encoded_jwt, secret, algorithms=["RS256"] )
@@ -195,18 +204,12 @@ def uninstall( request ):
         # Load the JSON payload.
         request_data = json.loads( data['data'] )
 
-        # Print the data received to the console for debugging.
-        logic.dump( request_data, "request_data" )
-
         # Extract the instance ID
         instance_id = request_data[ 'instanceId' ]
 
         # Search the tables for records, filtering by instance ID.
         user = get_object_or_404( User, pk=instance_id )
         extensions = Extension.objects.filter( instance_id = instance_id )
-
-        # question = get_object_or_404(Question, pk=question_id)
-        # selected_choice = question.choice_set.get(pk=request.POST["choice"])
 
         if user:
 
@@ -222,7 +225,7 @@ def uninstall( request ):
             extension.delete()
 
             # Return feedback to the console.
-            print( "Deleted component #" + extension.extension_id )
+            print( "Deleted extension #" + extension.extension_id )
 
         # Return feedback to the console.
         print( "Instance #" + instance_id + " uninstalled." )
@@ -230,3 +233,239 @@ def uninstall( request ):
     # The app must return a 200 response upon successful receipt of a webhook.
     # Source: https://dev.wix.com/docs/rest/articles/getting-started/webhooks
     return HttpResponse( status=200 )
+
+# App Settings Panel
+@method_decorator( csrf_exempt )
+def settings( request ):
+
+    """
+    Build the App Settings panel allowing users to customize the app iframe extension.
+    
+    Find recommended App Settings panel features here:
+    https://devforum.wix.com/kb/en/article/build-an-app-settings-panel-for-website-iframe-components
+    """
+    print("Settings route called.")
+    # Initialize variables.
+    instance_id = None
+    requested_extension_id = None
+    extension_in_db = None
+    before_image = static('sliders/images/placeholder-1.svg')
+    before_label_text = 'Before'
+    before_alt_text = ''
+    after_image = static('sliders/images/placeholder-3.svg')
+    after_label_text = 'After'
+    after_alt_text = ''
+    slider_offset = 50
+    slider_offset_float = 0.5
+    slider_orientation = 'horizontal'
+    horizontal_checked = ''
+    vertical_checked = ''
+
+    # If the user submitted a GET request...
+    if request.method == 'GET':
+
+        #
+        if 'origCompId' in request.GET.keys() :
+
+            # Assign the value of 'origCompId' from the GET request to the extension_id variable.
+            requested_extension_id = request.GET[ 'origCompId' ]
+
+            # Search the Extension table for the extension by its extension ID (primary key).
+            extension_in_db = Extension.objects.filter( pk=requested_extension_id ).first()
+
+            # If the requested_extension variable is not empty...
+            if extension_in_db != None:
+
+                # Update the local variables with the requested_extension values.
+                instance_id         = extension_in_db.instance_id
+                before_image        = extension_in_db.before_image
+                before_label_text   = extension_in_db.before_label_text
+                before_alt_text     = extension_in_db.before_alt_text
+                after_image         = extension_in_db.after_image
+                after_label_text    = extension_in_db.after_label_text
+                after_alt_text      = extension_in_db.after_alt_text
+                slider_offset       = extension_in_db.offset
+                slider_offset_float = extension_in_db.offset_float
+
+                if extension_in_db.is_vertical is True :
+                    slider_orientation  = 'vertical'
+                    vertical_checked = 'checked'
+                else :
+                    slider_orientation  = 'horizontal'
+                    horizontal_checked = 'checked'
+
+    # Pass local variables to Django and render the template.
+    return render(
+        request,
+        "sliders/settings.html",
+        {
+            "page_id": "settings",
+            "instance_id": instance_id,
+            "extension_id": requested_extension_id,
+            "before_image": before_image,
+            "before_label_text": before_label_text,
+            "before_alt_text": before_alt_text,
+            "after_image": after_image,
+            "after_label_text": after_label_text,
+            "after_alt_text": after_alt_text,
+            "slider_offset": slider_offset,
+            "slider_offset_float": slider_offset_float,
+            "slider_orientation": slider_orientation,
+            "horizontal_checked": horizontal_checked,
+            "vertical_checked": vertical_checked
+        },
+    )
+
+# Widget Extension
+@method_decorator( csrf_exempt )
+def widget( request ):
+
+    """
+    Build the widget iframe extension containing a before-and-after slider.
+    """
+
+    # Initialize variables.
+    requested_extension_id = None
+    extension_in_db = None
+    before_image = static('sliders/images/placeholder-1.svg')
+    before_label_text = 'Before'
+    before_alt_text = ''
+    after_image = static('sliders/images/placeholder-3.svg')
+    after_label_text = 'After'
+    after_alt_text = ''
+    slider_offset = 50
+    slider_offset_float = 0.5
+    slider_orientation = 'horizontal'
+    is_vertical = False
+
+    # If the user submitted a POST request...
+    if request.method == 'POST':
+
+        # Get the data received.
+        request_data = json.loads( request.body )
+        requested_extension_id = request_data[ "extensionID" ]
+
+        # Search the extensionSlider table for the extension by its extension ID (primary key).
+        extension_in_db = Extension.objects.filter( pk=requested_extension_id ).first()
+
+        #
+        if extension_in_db is not None:
+            
+            #
+            if request_data[ "action" ] == "delete" :
+
+                # Delete the extension by its ID.
+                 extension_in_db.delete()
+
+            else:
+
+                # If the user selected the vertical orientation...
+                if request_data[ 'sliderOrientation' ] == 'vertical' :
+
+                    # Update the variable.
+                    is_vertical = True
+
+                # Edit the extensionSlider record.
+                extension_in_db.before_image = request_data[ 'beforeImage' ]
+                extension_in_db.before_label_text = request_data[ 'beforeLabelText' ]
+                extension_in_db.before_alt_text = request_data[ 'beforeAltText' ]
+                extension_in_db.after_image = request_data[ 'afterImage' ]
+                extension_in_db.after_label_text = request_data[ 'afterLabelText' ]
+                extension_in_db.after_alt_text = request_data[ 'afterAltText' ]
+                extension_in_db.offset = request_data[ 'sliderOffset' ]
+                extension_in_db.offset_float = request_data[ 'sliderOffsetFloat' ]
+                extension_in_db.is_vertical = is_vertical
+
+                # Add a new extension to the Extension table.
+                extension_in_db.save()
+
+        else:
+            
+            # If the request contains an instance ID...
+            if 'instanceID' in request_data.keys():
+
+                # Get the associated User instance.
+                user_in_db = User.objects.filter( pk=request_data[ 'instanceID' ] ).first()
+
+                # If the user selected the vertical orientation...
+                if request_data[ 'sliderOrientation' ] == 'vertical' :
+
+                    # Update the variable.
+                    is_vertical = True
+
+                # Construct a new Extension record.
+                extension = Extension(
+                    extension_id = requested_extension_id,
+                    instance_id = user_in_db,
+                    before_image = request_data[ 'beforeImage' ],
+                    before_label_text = request_data[ 'beforeLabelText' ],
+                    before_alt_text = request_data[ 'beforeAltText' ],
+                    after_image = request_data[ 'afterImage' ],
+                    after_label_text = request_data[ 'afterLabelText' ],
+                    after_alt_text = request_data[ 'afterAltText' ],
+                    offset = request_data[ 'sliderOffset' ],
+                    offset_float = request_data[ 'sliderOffsetFloat' ],
+                    is_vertical = is_vertical
+                )
+
+                # Add a new extension to the extensionSlider table.
+                extension.save()
+
+        # Return a success message.
+        return HttpResponse(status=201)
+
+    # If the user submitted a GET request...
+    if request.method == 'GET':
+
+        # If the GET request provided the 'origCompId'...
+        if 'origCompId' in request.GET.keys() :
+
+            # Assign its value to extension_id...
+            requested_extension_id = request.GET[ 'origCompId' ]
+
+        elif 'viewerCompId' in request.GET.keys() :
+
+            # Otherwise, use the 'viewerCompId' (front-end) extension ID.
+            requested_extension_id = request.GET[ 'viewerCompId' ]
+
+        # Search the database and get the extension by the requested extension ID (primary key).
+        extension_in_db = Extension.objects.filter( pk=requested_extension_id ).first()
+
+        # Extension found.
+        if extension_in_db is not None:
+
+            # If the user selected the vertical orientation...
+            if extension_in_db.is_vertical is True :
+
+                # Update the local variable for use in the widget template.
+                slider_orientation  = 'vertical'
+
+            # Update the local variables.
+            before_image = extension_in_db.before_image
+            before_label_text = extension_in_db.before_label_text
+            before_alt_text = extension_in_db.before_alt_text
+            after_image = extension_in_db.after_image
+            after_label_text = extension_in_db.after_label_text
+            after_alt_text = extension_in_db.after_alt_text
+            slider_offset = extension_in_db.offset
+            slider_offset_float = extension_in_db.offset_float
+            slider_orientation = slider_orientation
+
+    # Pass local variables to Django and render the template.
+    return render(
+        request,
+        "sliders/widget.html",
+        {
+            "page_id": "baie-slider",
+            "extension_id": requested_extension_id,
+            "before_image": before_image,
+            "before_label_text": before_label_text,
+            "before_alt_text": before_alt_text,
+            "after_image": after_image,
+            "after_label_text": after_label_text,
+            "after_alt_text": after_alt_text,
+            "slider_offset": slider_offset,
+            "slider_offset_float": slider_offset_float,
+            "slider_orientation": slider_orientation
+        }
+    )

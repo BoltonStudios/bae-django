@@ -1,5 +1,5 @@
-{% extends 'site-layout.html' %}
-
+{% extends 'sliders/site-layout.html' %}
+{% load static %}
 {% block content %}
     <!-- start content -->
     <div class="content">
@@ -121,7 +121,7 @@
             console.log( "deleteWidgetExtension called.");
             console.log( e );
 
-            fetch( "{% url 'widget_extension' %}", {
+            fetch( "{% url 'sliders:widget' %}", {
                 method: "POST",
                 body: JSON.stringify({
                     extensionID: "{{extension_id}}",
@@ -154,7 +154,7 @@
             var sliderOrientation = slider.dataset.sliderOrientation;
 
             // Send the attribute data to the app in an asynchronous POST request.
-            fetch( "{% url 'widget_extension' %}", {
+            fetch( "{% url 'sliders:widget' %}", {
                 method: "POST",
                 body: JSON.stringify({
                     action: "publish",
