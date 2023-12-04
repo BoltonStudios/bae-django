@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.conf import settings
+from django.conf import settings as conf_settings
 from django.templatetags.static import static
 
 # Local imports.
@@ -58,7 +58,7 @@ def app_wix( request ):
 
     # Construct the app installation URL.
     permission_request_url = "https://www.wix.com/installer/install"
-    app_id = settings.APP_ID
+    app_id = conf_settings.APP_ID
     redirect_url = 'https://' + request.META[ 'HTTP_HOST' ] + '/sliders/redirect-wix/'
     redirect_url = urllib.parse.quote( redirect_url, safe='~')
     token = request.GET[ 'token' ]
@@ -94,9 +94,9 @@ def redirect_wix( request ):
         print( "Getting Tokens From Wix." )
         print( "=======================" )
 
-        auth_provider_base_url = settings.AUTH_PROVIDER_BASE_URL
-        app_secret = settings.APP_SECRET
-        app_id = settings.APP_ID
+        auth_provider_base_url = conf_settings.AUTH_PROVIDER_BASE_URL
+        app_secret = conf_settings.APP_SECRET
+        app_id = conf_settings.APP_ID
 
         # Get a refresh token from Wix.
         refresh_token = json.loads(
@@ -187,10 +187,10 @@ def uninstall( request ):
 
     # Initialize variables.
     instance_id = ''
-    secret = settings.WEBHOOK_PUBLIC_KEY
-    auth_provider_base_url = settings.AUTH_PROVIDER_BASE_URL
-    app_secret = settings.APP_SECRET
-    app_id = settings.APP_ID
+    secret = conf_settings.WEBHOOK_PUBLIC_KEY
+    auth_provider_base_url = conf_settings.AUTH_PROVIDER_BASE_URL
+    app_secret = conf_settings.APP_SECRET
+    app_id = conf_settings.APP_ID
 
     # If the user submitted a POST request...
     if request.method == 'POST':

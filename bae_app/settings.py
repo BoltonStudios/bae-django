@@ -24,20 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from .env file
 load_dotenv()
 
-print( "settings imported" )
-
 # Wix Constants
 WEBHOOK_PUBLIC_KEY = os.getenv("WEBHOOK_PUBLIC_KEY")
 APP_ID = os.getenv("APP_ID")
 APP_SECRET = os.getenv("APP_SECRET")
 AUTH_PROVIDER_BASE_URL = os.getenv("AUTH_PROVIDER_BASE_URL")
 INSTANCE_API_URL = os.getenv("INSTANCE_API_URL")
-
-
-print( "WEBHOOK_PUBLIC_KEY is..." )
-print( APP_ID )
-print( "APP_ID is..." )
-print( APP_ID )
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
