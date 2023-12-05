@@ -127,8 +127,8 @@ def redirect_wix( request ):
 
         # Construct the URL to Completes the OAuth flow.
         # https://dev.wix.com/api/rest/getting-started/authentication#getting-started_authentication_step-5a-app-completes-the-oauth-flow
-        redirect_url = "https://www.wix.com/installer/close-window?access_token="
-        redirect_url += access_token
+        complete_oauth_redirect_url = "https://www.wix.com/installer/close-window?access_token="
+        complete_oauth_redirect_url += access_token
 
         # Extract data from the app instance.
         instance_id = app_instance[ 'instance' ][ 'instanceId' ]
@@ -168,10 +168,10 @@ def redirect_wix( request ):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
 
-        print( "redirecting to " + redirect_url )
+        print( "redirecting to " + complete_oauth_redirect_url )
         print( "=============================" )
 
-        return redirect( redirect_url, permanent=True )
+        return redirect( complete_oauth_redirect_url, permanent=True )
 
     except ValueError as err:
         print( "Error getting token from Wix" )
