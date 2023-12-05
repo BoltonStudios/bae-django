@@ -167,7 +167,11 @@ def redirect_wix( request ):
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-        return HttpResponseRedirect( redirect_url )
+
+        print( "redirecting to " + redirect_url )
+        print( "=============================" )
+
+        return redirect( redirect_url, permanent=True )
 
     except ValueError as err:
         print( "Error getting token from Wix" )
