@@ -3,15 +3,13 @@ Docstring
 """
 
 # Python imports
-import os
 import json
 import urllib.parse
 import jwt
 
 # Django imports
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.conf import settings as conf_settings
@@ -162,6 +160,9 @@ def redirect_wix( request ):
         # Add the new or updated user record to the User table.
         user.save()
 
+        # Mark the installation complete.
+        logic.finish_app_installation( access_token )
+
         # Close the consent window by redirecting the user to the following URL
         # with the user's access token.
         # Always return an HttpResponseRedirect after successfully dealing
@@ -192,9 +193,6 @@ def uninstall( request ):
     # Initialize variables.
     instance_id = ''
     secret = conf_settings.WEBHOOK_PUBLIC_KEY
-    auth_provider_base_url = conf_settings.AUTH_PROVIDER_BASE_URL
-    app_secret = conf_settings.APP_SECRET
-    app_id = conf_settings.APP_ID
 
     # If the user submitted a POST request...
     if request.method == 'POST':
@@ -278,7 +276,7 @@ def settings( request ):
             extension_in_db = Extension.objects.filter( pk=requested_extension_id ).first()
 
             # If the requested_extension variable is not empty...
-            if extension_in_db != None:
+            if extension_in_db is not None:
 
                 # Update the local variables with the requested_extension values.
                 instance_id         = extension_in_db.instance_id
@@ -324,6 +322,10 @@ def settings( request ):
 @method_decorator( csrf_exempt )
 def widget( request ):
 
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-statements
+    # Our variables are reasonable in this case.
+
     """
     Build the widget iframe extension containing a before-and-after slider.
     """
@@ -354,12 +356,12 @@ def widget( request ):
 
         #
         if extension_in_db is not None:
-            
+
             #
             if request_data[ "action" ] == "delete" :
 
                 # Delete the extension by its ID.
-                 extension_in_db.delete()
+                extension_in_db.delete()
 
             else:
 
@@ -384,7 +386,7 @@ def widget( request ):
                 extension_in_db.save()
 
         else:
-            
+
             # If the request contains an instance ID...
             if 'instanceID' in request_data.keys():
 
@@ -453,7 +455,6 @@ def widget( request ):
             after_alt_text = extension_in_db.after_alt_text
             slider_offset = extension_in_db.offset
             slider_offset_float = extension_in_db.offset_float
-            slider_orientation = slider_orientation
 
     # Pass local variables to Django and render the template.
     return render(

@@ -5,6 +5,7 @@ Helper functions mostly to handle Wix authorization.
 
 # Import dependencies.
 import requests
+from django.http import HttpResponse
 
 # Dump variable values to the terminal.
 def dump( item, name ):
@@ -98,6 +99,45 @@ def get_app_instance( refresh_token, instance_api_url, auth_provider_base_url, a
 
         # Provide feedback for the user.
         print( 'error in getAppInstance' )
+        print( err )
+
+        # Exit the function.
+        return err
+
+def finish_app_installation( access_token ):
+
+    """
+    Once your app requires no further setup steps, create the following request
+    to mark the installation as finished:
+    https://dev.wix.com/docs/rest/articles/getting-started/authentication#step-7-app-finishes-installation
+    """
+    print( 'Finish app installation.' )
+    print( "==============================" )
+    try:
+
+        # Initialize variables.
+        post_request_url = "https://www.wixapis.com/apps/v1/bi-event"
+        headers = {
+            'Authorization': access_token
+        }
+        body_parameters = {
+            "eventName": "APP_FINISHED_CONFIGURATION"
+        }
+
+        # Mark the installation as finished
+        requests.post(
+            post_request_url,
+            headers = headers,
+            json = body_parameters,
+            timeout = 2.50
+        ).json()
+
+        return HttpResponse( status=200 )
+
+    except Exception as err :
+
+        # Provide feedback for the user.
+        print( 'error in finish_app_installation' )
         print( err )
 
         # Exit the function.
