@@ -5,7 +5,6 @@ Helper functions mostly to handle Wix authorization.
 
 # Import dependencies.
 import requests
-from django.http import HttpResponse
 
 # Dump variable values to the terminal.
 def dump( item, name ):
@@ -125,14 +124,14 @@ def finish_app_installation( access_token ):
         }
 
         # Mark the installation as finished
-        requests.post(
+        response = requests.post(
             post_request_url,
             headers = headers,
             json = body_parameters,
             timeout = 2.50
         ).json()
 
-        return HttpResponse( status=200 )
+        return response
 
     except Exception as err :
 

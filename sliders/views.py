@@ -72,6 +72,9 @@ def app_wix( request ):
 # Redirect URL (App Authorized, Complete Installation).
 def redirect_wix( request ):
 
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-statements
+    # Our variables are reasonable in this case.
     """
     The program calls this route once the user finishes installing your application 
     and Wix redirects them to your application's site (here).
@@ -86,7 +89,7 @@ def redirect_wix( request ):
     print( "=============================" )
 
     # Get the authorization code from Wix.
-    authorization_code = request.GET[ 'code' ]
+    authorization_code = request.GET.get( 'code' )
 
     try:
         print( "Getting Tokens From Wix." )
@@ -161,7 +164,9 @@ def redirect_wix( request ):
         user.save()
 
         # Mark the installation complete.
-        logic.finish_app_installation( access_token )
+        installation_complete_response = logic.finish_app_installation( access_token )
+
+        logic.dump( installation_complete_response, 'installation_complete_response' )
 
         # Close the consent window by redirecting the user to the following URL
         # with the user's access token.
