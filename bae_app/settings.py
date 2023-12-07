@@ -38,6 +38,7 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [os.getenv("DJANGO_ALLOWED_HOSTS"),"127.0.0.1","localhost"]
+CSRF_TRUSTED_ORIGINS = [os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS"),"https://*.127.0.0.1","https://*.localhost"]
 
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
@@ -45,7 +46,7 @@ DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 
 INSTALLED_APPS = [
     "sliders.apps.SlidersConfig",
-    "debug_toolbar",
+    #"debug_toolbar",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,7 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    #"debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <link href="{% static 'sliders/css/style.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'sliders/css/style.css' %}?{% now "U" %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'sliders/css/twentytwenty.css' %}" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="preload" as="font">
     <link href="{% static 'sliders/images/baie-logo.svg' %}" rel="icon" type="image/svg" />
@@ -22,7 +22,7 @@
     
   </head>
 
-  <body>
+  <body id="{{page_id}}">
 
     <!-- start wrapper -->
     <div id="wrapper">

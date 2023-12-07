@@ -466,7 +466,7 @@ def widget( request ):
         request,
         "sliders/widget.html",
         {
-            "page_id": "baie-slider",
+            "page_id": "widget",
             "extension_id": requested_extension_id,
             "before_image": before_image,
             "before_label_text": before_label_text,
