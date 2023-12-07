@@ -105,7 +105,7 @@
 
                             <div class="row mb-2">
                                 <div class="col-auto">
-                                    <h6>Before</h6>
+                                    <strong>Before</strong>
                                 </div>
                                 <div class="col" style="text-align: right;">
                                     <button class="btn btn-primary btn-sm update-baie-images-toggle" type="button">Select Image</button>
@@ -157,7 +157,7 @@
 
                             <div class="row mb-2">
                                 <div class="col-auto">
-                                    <h6>After</6>
+                                    <strong>After</strong>
                                 </div>
                                 <div class="col" style="text-align: right;">
                                     <button class="btn btn-primary btn-sm update-baie-images-toggle" type="button">Select Image</button>
@@ -211,10 +211,10 @@
                         </div>
 
                         <!--Slider Offset-->
-                        <div class="container px-4 py-3">
+                        <div class="container px-4 py-2">
                             <div class="row">
                                 <div class="col-9">
-                                    <label for="sliderOffsetRange" class="form-label">Slider Offset</label><br>
+                                    <label for="sliderOffsetRange" class="form-label"><strong>Slider Offset</strong></label><br>
                                     <input type="range" class="form-range" id="sliderOffsetRange" onchange="updateBaieExtension()" value="{{ slider_offset }}">
                                 </div>
                                 <div class="col-3">
@@ -225,10 +225,10 @@
                         </div>
 
                         <!--Orientation-->
-                        <div class="container px-4 py-1">
+                        <div class="container px-4 py-2">
                             <div class="row">
                                 <div class="col-12">
-                                    <label for="sliderOrientation" class="form-label">Slider Orientation</label><br>
+                                    <label for="sliderOrientation" class="form-label"><strong>Slider Orientation</strong></label><br>
                                     <div class="form-check">
                                         <input 
                                             class="form-check-input"
@@ -257,6 +257,42 @@
                                           Vertical
                                         </label>
                                       </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Overlay Disabled-->
+                        <div class="container px-4 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="sliderOverlayToggle"
+                                        class="form-label"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-title="Toggle the before and after labels.">
+
+                                        <strong>Slider Overlay</strong>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                        </svg>
+
+                                    </label><br>
+
+                                    <div class="form-check form-switch">
+
+                                        <input 
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            role="switch"
+                                            name="sliderOverlayToggle"
+                                            id="sliderOverlayToggle"
+                                            onchange="updateBaieExtension( this )"
+                                            {{ overlay_enabled_checked }}
+                                        >
+                                        <label class="form-check-label" for="sliderOverlayToggle">Enabled</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -301,142 +337,161 @@
         </div>
     </div>
         
-        <script>
-            
-            // Define the function to update image elements with user's media selections.
-            function updateBaieImages( event, element ){
+    <script>
 
-                console.log( "updateBaieImages() called." )
+        // Initialize Boostrap tooltips.
+        // Source: https://getbootstrap.com/docs/5.3/components/tooltips/
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        
+        // Define the function to update image elements with user's media selections.
+        function updateBaieImages( event, element ){
 
-                // Declare variables.
-                var imageURL = '';
-                var imageType = element.dataset.baieImageType;
-                var thumbnailImage = element.querySelector( '.img-thumbnail' );
+            console.log( "updateBaieImages() called." )
 
-                // openMediaDialog(mediaType, multiSelect, onSuccess, \[onCancel\])
-                // https://dev.wix.com/api/iframe-sdk/sdk/wix.settings#sdk_wix.settings_openmediadialog
-                Wix.Settings.openMediaDialog(
-                    Wix.Settings.MediaType.IMAGE, // mediaType
-                    false, // multiSelect
-                    function( data ){
-                        // onSuccess
-                        // fullSizeImageURL = Wix.Utils.Media.getImageUrl( data.relativeUri );
-                        thumbnailURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 220, 113 )
-                        imageURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 637, 328 )
-                        
-                        // Add the image URL to the data attribute.
-                        element.dataset.baieImage = imageURL;
+            // Declare variables.
+            var imageURL = '';
+            var imageType = element.dataset.baieImageType;
+            var thumbnailImage = element.querySelector( '.img-thumbnail' );
 
-                        // Update the thumbnail with the selected image URL.
-                        thumbnailImage.src = thumbnailURL;
+            // openMediaDialog(mediaType, multiSelect, onSuccess, \[onCancel\])
+            // https://dev.wix.com/api/iframe-sdk/sdk/wix.settings#sdk_wix.settings_openmediadialog
+            Wix.Settings.openMediaDialog(
+                Wix.Settings.MediaType.IMAGE, // mediaType
+                false, // multiSelect
+                function( data ){
+                    // onSuccess
+                    // fullSizeImageURL = Wix.Utils.Media.getImageUrl( data.relativeUri );
+                    thumbnailURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 220, 113 )
+                    imageURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 637, 328 )
+                    
+                    // Add the image URL to the data attribute.
+                    element.dataset.baieImage = imageURL;
 
-                        // Update the extension to reflect the settings changes.
-                        updateBaieExtension()
-                    }
-                );
-            }
+                    // Update the thumbnail with the selected image URL.
+                    thumbnailImage.src = thumbnailURL;
 
-            // Define the function to update the widget extension with user's Settings inputs.
-            function updateBaieExtension(){
-
-                console.log( "updateBaieExtension() called." )
-                
-                // Initialize variables.
-                var beforeImage     = document.getElementById( "baie-before-image" ).dataset.baieImage;
-                var beforeLabelText   = document.getElementById( "before-label-text" ).value;
-                var beforeAltText   = document.getElementById( "before-alt-text" ).value;
-                var afterImage      = document.getElementById( "baie-after-image" ).dataset.baieImage;
-                var afterLabelText    = document.getElementById( "after-label-text" ).value;
-                var afterAltText    = document.getElementById( "after-alt-text" ).value;
-                var sliderOffset    = document.getElementById( "sliderOffsetRange" ).value;
-                var sliderOffsetFloat = parseFloat( sliderOffset ) / 100;
-                var sliderOrientation = document.getElementsByName( "sliderOrientation" );
-
-                // Extract value from Slider Orientation radio options.
-                // Iterate over the radio options.
-                for( i = 0; i < sliderOrientation.length; i++ ){
-
-                    // If the current radio option is checked.
-                    if( sliderOrientation[ i ].checked ){
-
-                        // Store the value of the checked option.
-                        sliderOrientation = sliderOrientation[ i ].value;
-                    }
+                    // Update the extension to reflect the settings changes.
+                    updateBaieExtension()
                 }
+            );
+        }
 
-                // Prepare message.
-                var message = {
-                    beforeImage: beforeImage,
-                    beforeLabelText: beforeLabelText,
-                    beforeAltText: beforeAltText,
-                    afterImage: afterImage,
-                    afterLabelText: afterLabelText,
-                    afterAltText: afterAltText,
-                    sliderOffset: sliderOffset,
-                    sliderOffsetFloat: sliderOffsetFloat,
-                    sliderOrientation: sliderOrientation
-                };
+        // Define the function to update the widget extension with user's Settings inputs.
+        function updateBaieExtension(){
 
-                // Manipulate settings panel.
-                document.getElementById( "sliderOffsetNumber" ).innerHTML = sliderOffset;
-
-                // Print status update to the console.
-                console.log( "updateBaieExtension() called." );
-                console.log( "message = " );
-                console.log( message );
-                
-                // Send message to the extension iframe.
-                Wix.Settings.triggerSettingsUpdatedEvent( message, '{{extension_id}}' );
-            }
-
-            // Get elements to pair with event listeners.
-            var updateBaieImagesToggles = document.getElementsByClassName( "update-baie-images-toggle" );
+            console.log( "updateBaieExtension() called." )
             
-            // Iterate over the elements found.
-            for( let i = 0; i < updateBaieImagesToggles.length; i++ ){
+            // Initialize variables.
+            var beforeImage     = document.getElementById( "baie-before-image" ).dataset.baieImage;
+            var beforeLabelText   = document.getElementById( "before-label-text" ).value;
+            var beforeAltText   = document.getElementById( "before-alt-text" ).value;
+            var afterImage      = document.getElementById( "baie-after-image" ).dataset.baieImage;
+            var afterLabelText    = document.getElementById( "after-label-text" ).value;
+            var afterAltText    = document.getElementById( "after-alt-text" ).value;
+            var sliderOffset    = document.getElementById( "sliderOffsetRange" ).value;
+            var sliderOffsetFloat = parseFloat( sliderOffset ) / 100;
+            var sliderOrientation = document.getElementsByName( "sliderOrientation" );
+            var sliderOverlayToggle = document.getElementsByName( "sliderOverlayToggle" );
 
-                // Add a listener for the "click" even to each element.
-                updateBaieImagesToggles[ i ].addEventListener( "click", function( event ){
+            // Extract value from Slider Orientation radio options.
+            // Iterate over the radio options.
+            for( i = 0; i < sliderOrientation.length; i++ ){
 
-                    // Get the parent element with the class .baie-image-select,
-                    // which has many data attributes used to toggle changes in the iframe(s).
-                    baieImageSelect = this.closest( ".baie-image-select" );
+                // If the current radio option is checked.
+                if( sliderOrientation[ i ].checked ){
 
-                    // On click, run the updateBaieImages() function.
-                    updateBaieImages( event, baieImageSelect )
-                });
+                    // Store the value of the checked option.
+                    sliderOrientation = sliderOrientation[ i ].value;
+                }
             }
-
-            // Get elements to trigger label text changes.
-            var updateBaieLabelToggles = document.getElementsByClassName( "update-baie-label-toggle" );
             
-            // Iterate over the elements found.
-            for( let i = 0; i < updateBaieLabelToggles.length; i++ ){
+            // Extract value from Slider Overlay Toggle radio or checkbox options.
+            // Iterate over the items.
+            for( i = 0; i < sliderOverlayToggle.length; i++ ){
 
-                // Add a listener for the "click" event to each element.
-                updateBaieLabelToggles[ i ].addEventListener(  "focusout", function( event ){
+                // If the current radio option is checked.
+                if( sliderOverlayToggle[ i ].checked ){
 
-                    console.log( "focusout event fired" );
-                    console.log( event.srcElement.value );
-                    updateBaieExtension()
-                });
+                    // Store the value of the checked option.
+                    sliderOverlayToggle = sliderOverlayToggle[ i ].value;
+                }
             }
 
-            // Get elements to trigger alt text changes.
-            var updateBaieAltToggles = document.getElementsByClassName( "update-baie-alt-toggle" );
+            // Prepare message.
+            var message = {
+                beforeImage: beforeImage,
+                beforeLabelText: beforeLabelText,
+                beforeAltText: beforeAltText,
+                afterImage: afterImage,
+                afterLabelText: afterLabelText,
+                afterAltText: afterAltText,
+                sliderOffset: sliderOffset,
+                sliderOffsetFloat: sliderOffsetFloat,
+                sliderOrientation: sliderOrientation,
+                sliderOverlayToggle: sliderOverlayToggle
+            };
 
-            // Iterate over the elements found.
-            for( let i = 0; i < updateBaieAltToggles.length; i++ ){
+            // Manipulate settings panel.
+            document.getElementById( "sliderOffsetNumber" ).innerHTML = sliderOffset;
 
-                // Add a listener for the "click" event to each element.
-                updateBaieAltToggles[ i ].addEventListener(  "focusout", function( event ){
+            // Print status update to the console.
+            console.log( "updateBaieExtension() called." );
+            console.log( "message = " );
+            console.log( message );
+            
+            // Send message to the extension iframe.
+            Wix.Settings.triggerSettingsUpdatedEvent( message, '{{extension_id}}' );
+        }
 
-                    console.log( "focusout event fired" );
-                    console.log( event.srcElement.value );
-                    updateBaieExtension()
-                });
-            }
+        // Get elements to pair with event listeners.
+        var updateBaieImagesToggles = document.getElementsByClassName( "update-baie-images-toggle" );
+        
+        // Iterate over the elements found.
+        for( let i = 0; i < updateBaieImagesToggles.length; i++ ){
 
-        </script>
+            // Add a listener for the "click" even to each element.
+            updateBaieImagesToggles[ i ].addEventListener( "click", function( event ){
+
+                // Get the parent element with the class .baie-image-select,
+                // which has many data attributes used to toggle changes in the iframe(s).
+                baieImageSelect = this.closest( ".baie-image-select" );
+
+                // On click, run the updateBaieImages() function.
+                updateBaieImages( event, baieImageSelect )
+            });
+        }
+
+        // Get elements to trigger label text changes.
+        var updateBaieLabelToggles = document.getElementsByClassName( "update-baie-label-toggle" );
+        
+        // Iterate over the elements found.
+        for( let i = 0; i < updateBaieLabelToggles.length; i++ ){
+
+            // Add a listener for the "click" event to each element.
+            updateBaieLabelToggles[ i ].addEventListener(  "focusout", function( event ){
+
+                console.log( "focusout event fired" );
+                console.log( event.srcElement.value );
+                updateBaieExtension()
+            });
+        }
+
+        // Get elements to trigger alt text changes.
+        var updateBaieAltToggles = document.getElementsByClassName( "update-baie-alt-toggle" );
+
+        // Iterate over the elements found.
+        for( let i = 0; i < updateBaieAltToggles.length; i++ ){
+
+            // Add a listener for the "click" event to each element.
+            updateBaieAltToggles[ i ].addEventListener(  "focusout", function( event ){
+
+                console.log( "focusout event fired" );
+                console.log( event.srcElement.value );
+                updateBaieExtension()
+            });
+        }
+
+    </script>
     </div>
 {% endblock %}

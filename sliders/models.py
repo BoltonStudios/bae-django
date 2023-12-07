@@ -36,7 +36,8 @@ class Extension( models.Model ):
     after_alt_text      = models.CharField( max_length=255 )
     offset              = models.IntegerField()
     offset_float        = models.FloatField()
-    is_vertical         = models.BooleanField()
+    is_vertical         = models.BooleanField( default=False )
+    is_overlay_disabled = models.BooleanField( default=False )
     created             = models.DateTimeField( auto_now_add=True )
     last_modified       = models.DateTimeField( auto_now=True )
 

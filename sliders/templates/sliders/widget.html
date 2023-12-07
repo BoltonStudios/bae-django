@@ -15,6 +15,7 @@
             data-slider-offset="{{slider_offset}}"
             data-slider-offset-float="{{slider_offset_float}}"
             data-slider-orientation="{{slider_orientation}}"
+            data-slider-overlay-toggle="{{slider_overlay_toggle}}"
         >
             <!-- The before image is first -->
             {% if before_image != '' %}
@@ -81,13 +82,16 @@
             slider.dataset.sliderOffset = e.sliderOffset;
             slider.dataset.sliderOffsetFloat = e.sliderOffsetFloat;
             slider.dataset.sliderOrientation = e.sliderOrientation;
+            slider.dataset.sliderOverlayToggle = e.sliderOverlayToggle;
+
+            console.log( "slider.dataset.sliderOverlayToggle is..." );
+            console.log( slider.dataset.sliderOverlayToggle );
 
             // Update labels.
             document.getElementById( "{{extension_id}}-before-image" ).innerHTML = e.beforeImage;
             document.getElementById( "{{extension_id}}-after-image" ).innerHTML = e.afterImage;
             document.getElementById( "{{extension_id}}-slider-offset" ).innerHTML = e.sliderOffset;
             document.getElementById( "{{extension_id}}-slider-offset-float" ).innerHTML = e.sliderOffsetFloat;
-            //document.getElementById( "{{extension_id}}-slider-orientation" ).innerHTML = e.sliderOrientation;
 
             // Update image attributes.
             beforeImage.src = e.beforeImage;
@@ -107,7 +111,8 @@
                 before_label: e.beforeLabelText, // Set a custom before label.
                 after_label: e.afterLabelText, // Set a custom after label.
                 default_offset_pct: e.sliderOffsetFloat, // How much of the before image is visible when the page loads.
-                orientation: e.sliderOrientation // Orientation of the before and after images ('horizontal' or 'vertical')
+                orientation: e.sliderOrientation, // Orientation of the before and after images ('horizontal' or 'vertical')
+                no_overlay: e.sliderOverlayToggle, //Do not show the overlay with before and after
             });
 
             //
@@ -142,35 +147,37 @@
             
             // Get the extensions current attribute data.
             var slider =  document.getElementById( "{{extension_id}}-twentytwenty" );
-            var sliderId = slider.dataset.sliderId;
-            var beforeImage = slider.dataset.beforeImage;
-            var beforeLabelText = slider.dataset.beforeLabelText;
-            var beforeAltText = slider.dataset.beforeAltText;
-            var afterImage = slider.dataset.afterImage;
-            var afterLabelText = slider.dataset.afterLabelText;
-            var afterAltText = slider.dataset.afterAltText;
-            var sliderOffset = slider.dataset.sliderOffset;
-            var sliderOffsetFloat = slider.dataset.sliderOffsetFloat;
-            var sliderOrientation = slider.dataset.sliderOrientation;
+            //var sliderId = slider.dataset.sliderId;
+            //var beforeImage = slider.dataset.beforeImage;
+            //var beforeLabelText = slider.dataset.beforeLabelText;
+            //var beforeAltText = slider.dataset.beforeAltText;
+            //var afterImage = slider.dataset.afterImage;
+            //var afterLabelText = slider.dataset.afterLabelText;
+            //var afterAltText = slider.dataset.afterAltText;
+            //var sliderOffset = slider.dataset.sliderOffset;
+            //var sliderOffsetFloat = slider.dataset.sliderOffsetFloat;
+            //var sliderOrientation = slider.dataset.sliderOrientation;
+           // var sliderOverlayToggle = slider.dataset.sliderOverlayToggle;
 
             // Send the attribute data to the app in an asynchronous POST request.
             fetch( "{% url 'sliders:widget' %}", {
                 method: "POST",
                 body: JSON.stringify({
                     action: "publish",
-                    extensionID: sliderId,
+                    extensionID: slider.dataset.sliderId,
                     siteID: Wix.Utils.getSiteOwnerId(),
                     userID: Wix.Utils.getUid(),
                     instanceID: Wix.Utils.getInstanceId(),
-                    beforeImage: beforeImage,
-                    beforeLabelText: beforeLabelText,
-                    beforeAltText: beforeAltText,
-                    afterImage: afterImage,
-                    afterLabelText: afterLabelText,
-                    afterAltText: afterAltText,
-                    sliderOffset: sliderOffset,
-                    sliderOffsetFloat: sliderOffsetFloat,
-                    sliderOrientation: sliderOrientation
+                    beforeImage: slider.dataset.beforeImage,
+                    beforeLabelText: slider.dataset.beforeLabelText,
+                    beforeAltText: slider.dataset.beforeAltText,
+                    afterImage: slider.dataset.afterImage,
+                    afterLabelText: slider.dataset.afterLabelText,
+                    afterAltText: slider.dataset.afterAltText,
+                    sliderOffset: slider.dataset.sliderOffset,
+                    sliderOffsetFloat: slider.dataset.sliderOffsetFloat,
+                    sliderOrientation: slider.dataset.sliderOrientation,
+                    sliderOverlayToggle: slider.dataset.sliderOverlayToggle
                 }),
                 headers: {
                 "Content-type": "application/json; charset=UTF-8"
@@ -181,18 +188,22 @@
 
        <script>
         // Initialize variables.
-        var beforeLabelText = "{{before_label_text}}"
-        var afterLabelText = "{{after_label_text}}"
-        var sliderOffsetFloat = Number( "{{slider_offset_float}}" )
-        var sliderOrientation = "{{slider_orientation}}"
+        //var beforeLabelText = "{{before_label_text}}"
+        //var afterLabelText = "{{after_label_text}}"
+        //var sliderOffsetFloat = Number( "{{slider_offset_float}}" )
+        //var sliderOrientation = "{{slider_orientation}}"
 
         // Initialize TwentyTwenty
         $(function(){
             $("#{{extension_id}}-twentytwenty").twentytwenty({
-                before_label: beforeLabelText, // Set a custom before label.
-                after_label: afterLabelText, // Set a custom after label.
-                default_offset_pct: sliderOffsetFloat, // How much of the before image is visible when the page loads
-                orientation: sliderOrientation // Orientation of the before and after images ('horizontal' or 'vertical')
+                before_label: "{{before_label_text}}", // Set a custom before label.
+                after_label: "{{after_label_text}}", // Set a custom after label.
+                default_offset_pct: Number( "{{slider_offset_float}}" ), // How much of the before image is visible when the page loads
+                orientation: "{{slider_orientation}}", // Orientation of the before and after images ('horizontal' or 'vertical')
+                no_overlay: Number( "{{slider_overlay_toggle}}" ), //Do not show the overlay with before and after
+                //move_slider_on_hover: true, // Move slider on mouse hover?
+                //move_with_handle_only: true, // Allow a user to swipe anywhere on the image to control slider movement. 
+                //click_to_move: false // Allow a user to click (or tap) anywhere on the image to move the slider to that location.
             });
         });
        </script>
