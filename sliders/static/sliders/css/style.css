@@ -16,7 +16,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  border-radius: 20px;
 }
 #settings .nav .nav-link:hover,
 #settings .tabs .nav-link:hover,
@@ -39,8 +38,6 @@
   font-family: HelveticaNeueW01-45Ligh, HelveticaNeueW02-45Ligh, HelveticaNeueW10-45Ligh, Helvetica Neue, Helvetica, Arial, sans-serif;
   font-weight: 300;
   line-height: 16px;
-  padding: 8px 24px;
-  border-radius: 18px;
 }
 #settings .tab-content .btn.btn-primary {
   background-color: #3899F4;
@@ -53,7 +50,6 @@
 #settings .tab-content .btn.btn-sm {
   font-size: 14px;
   line-height: 14px;
-  padding: 6px 18px;
 }
 #settings .tab-content .baie-image-select img:hover {
   cursor: pointer;

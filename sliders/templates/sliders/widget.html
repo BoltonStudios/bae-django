@@ -30,27 +30,6 @@
                 <img id="{{extension_id}}-after-image" src="{% static 'sliders/images/placeholder-3.svg' %}" width="637" height="328" alt="placeholder" />
             {% endif %}
         </div>
-        
-        <ul>
-            <li>Extension ID: {{extension_id}}</li>
-            <li>Before Image: <span id="{{extension_id}}-before-image" class="slider-image">{{before_image}}</span></li>
-            <li>After Image: <span id="{{extension_id}}-after-image" class="slider-image">{{after_image}}</span></li>
-            <li>Slider Offset: <span id="{{extension_id}}-slider-offset" class="slider-offset">{{slider_offset}}</span></li>
-            <li>Slider Offset Float: <span id="{{extension_id}}-slider-offset-float" class="slider-offset-float">{{slider_offset_float}}</span></li>
-        </ul>
-
-        <p id="target-text">Then</p>
-        {% if requests_list %}
-        <h3>Requests</h3>
-
-        <ol>
-           {% for request in requests_list %}
-
-           <li>{{ request }}</li>
-           
-           {% endfor %}
-       </ol>
-       {% endif %}
 
        <script>
 
@@ -86,12 +65,6 @@
 
             console.log( "slider.dataset.sliderOverlayToggle is..." );
             console.log( slider.dataset.sliderOverlayToggle );
-
-            // Update labels.
-            document.getElementById( "{{extension_id}}-before-image" ).innerHTML = e.beforeImage;
-            document.getElementById( "{{extension_id}}-after-image" ).innerHTML = e.afterImage;
-            document.getElementById( "{{extension_id}}-slider-offset" ).innerHTML = e.sliderOffset;
-            document.getElementById( "{{extension_id}}-slider-offset-float" ).innerHTML = e.sliderOffsetFloat;
 
             // Update image attributes.
             beforeImage.src = e.beforeImage;
@@ -147,17 +120,6 @@
             
             // Get the extensions current attribute data.
             var slider =  document.getElementById( "{{extension_id}}-twentytwenty" );
-            //var sliderId = slider.dataset.sliderId;
-            //var beforeImage = slider.dataset.beforeImage;
-            //var beforeLabelText = slider.dataset.beforeLabelText;
-            //var beforeAltText = slider.dataset.beforeAltText;
-            //var afterImage = slider.dataset.afterImage;
-            //var afterLabelText = slider.dataset.afterLabelText;
-            //var afterAltText = slider.dataset.afterAltText;
-            //var sliderOffset = slider.dataset.sliderOffset;
-            //var sliderOffsetFloat = slider.dataset.sliderOffsetFloat;
-            //var sliderOrientation = slider.dataset.sliderOrientation;
-           // var sliderOverlayToggle = slider.dataset.sliderOverlayToggle;
 
             // Send the attribute data to the app in an asynchronous POST request.
             fetch( "{% url 'sliders:widget' %}", {
@@ -187,12 +149,6 @@
        </script>
 
        <script>
-        // Initialize variables.
-        //var beforeLabelText = "{{before_label_text}}"
-        //var afterLabelText = "{{after_label_text}}"
-        //var sliderOffsetFloat = Number( "{{slider_offset_float}}" )
-        //var sliderOrientation = "{{slider_orientation}}"
-
         // Initialize TwentyTwenty
         $(function(){
             $("#{{extension_id}}-twentytwenty").twentytwenty({

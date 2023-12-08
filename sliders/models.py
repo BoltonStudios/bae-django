@@ -37,7 +37,7 @@ class Extension( models.Model ):
     offset              = models.IntegerField()
     offset_float        = models.FloatField()
     is_vertical         = models.BooleanField( default=False )
-    is_overlay_disabled = models.BooleanField( default=False )
+    is_overlay_enabled  = models.BooleanField( default=True )
     created             = models.DateTimeField( auto_now_add=True )
     last_modified       = models.DateTimeField( auto_now=True )
 

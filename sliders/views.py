@@ -270,16 +270,13 @@ def settings( request ):
     after_alt_text = ''
     slider_offset = 50
     slider_offset_float = 0.5
-    slider_orientation = 'horizontal'
-    horizontal_checked = ''
-    vertical_checked = ''
-    is_overlay_disabled = False
-    overlay_enabled_checked = ''
-    overlay_disabled_checked = ''
+    is_overlay_enabled = True
+    is_vertical = False
+    is_free = True
 
     # If the user submitted a GET request...
     if request.method == 'GET':
-
+        
         #
         if 'origCompId' in request.GET.keys() :
 
@@ -289,7 +286,7 @@ def settings( request ):
             # Search the Extension table for the extension by its extension ID (primary key).
             extension_in_db = Extension.objects.filter( pk=requested_extension_id ).first()
 
-            # If the requested_extension variable is not empty...
+            # Load existing extension...
             if extension_in_db is not None:
 
                 # Update the local variables with the requested_extension values.
@@ -302,23 +299,8 @@ def settings( request ):
                 after_alt_text      = extension_in_db.after_alt_text
                 slider_offset       = extension_in_db.offset
                 slider_offset_float = extension_in_db.offset_float
-                is_overlay_disabled = extension_in_db.is_overlay_disabled
-
-                #
-                if extension_in_db.is_vertical is True :
-                    slider_orientation  = 'vertical'
-                    vertical_checked = 'checked'
-                else :
-                    slider_orientation  = 'horizontal'
-                    horizontal_checked = 'checked'
-
-                #
-                if extension_in_db.is_overlay_disabled is True :
-                    is_overlay_disabled  = True
-                    overlay_disabled_checked = 'checked'
-                else :
-                    is_overlay_disabled = False
-                    overlay_enabled_checked = 'checked'
+                is_overlay_enabled  = extension_in_db.is_overlay_enabled
+                is_vertical         = extension_in_db.is_vertical
 
     # Pass local variables to Django and render the template.
     return render(
@@ -327,6 +309,7 @@ def settings( request ):
         {
             "page_id": "settings",
             "instance_id": instance_id,
+            "is_free": is_free,
             "extension_id": requested_extension_id,
             "before_image": before_image,
             "before_label_text": before_label_text,
@@ -336,12 +319,8 @@ def settings( request ):
             "after_alt_text": after_alt_text,
             "slider_offset": slider_offset,
             "slider_offset_float": slider_offset_float,
-            "slider_orientation": slider_orientation,
-            "horizontal_checked": horizontal_checked,
-            "vertical_checked": vertical_checked,
-            "slider_overlay_disabled" : is_overlay_disabled,
-            "overlay_enabled_checked": overlay_enabled_checked,
-            "overlay_disabled_checked": overlay_disabled_checked
+            "is_vertical": is_vertical,
+            "is_overlay_enabled": is_overlay_enabled
         },
     )
 
@@ -370,7 +349,6 @@ def widget( request ):
     slider_offset_float = 0.5
     slider_orientation = 'horizontal'
     is_vertical = False
-    is_overlay_disabled = False
 
     # If the user submitted a POST request...
     if request.method == 'POST':
@@ -383,10 +361,10 @@ def widget( request ):
         # Search the extensionSlider table for the extension by its extension ID (primary key).
         extension_in_db = Extension.objects.filter( pk=requested_extension_id ).first()
 
-        #
+        # Edit existing extension.
         if extension_in_db is not None:
 
-            #
+            # Delete existing extension.
             if request_data[ "action" ] == "delete" :
 
                 # Delete the extension by its ID.
@@ -400,12 +378,6 @@ def widget( request ):
                     # Update the variable.
                     is_vertical = True
 
-                # If the user selected the disabled the overlay...
-                if request_data[ 'sliderOverlayToggle' ] != 'on' :
-
-                    # Update the variable.
-                    is_overlay_disabled = True
-
                 # Edit the extensionSlider record.
                 extension_in_db.before_image = request_data[ 'beforeImage' ]
                 extension_in_db.before_label_text = request_data[ 'beforeLabelText' ]
@@ -416,12 +388,14 @@ def widget( request ):
                 extension_in_db.offset = request_data[ 'sliderOffset' ]
                 extension_in_db.offset_float = request_data[ 'sliderOffsetFloat' ]
                 extension_in_db.is_vertical = is_vertical
-                extension_in_db.is_overlay_disabled = is_overlay_disabled
+                extension_in_db.is_overlay_enabled = request_data[ 'sliderOverlayToggle' ]
 
                 # Add a new extension to the Extension table.
                 extension_in_db.save()
 
         else:
+
+            # Create new extension.
 
             # If the request contains an instance ID...
             if 'instanceID' in request_data.keys():
@@ -434,12 +408,6 @@ def widget( request ):
 
                     # Update the variable.
                     is_vertical = True
-
-                # If the user selected the disabled the overlay...
-                if request_data[ 'sliderOverlayToggle' ] != 'on' :
-
-                    # Update the variable.
-                    is_overlay_disabled = True
 
                 # Construct a new Extension record.
                 extension = Extension(
@@ -454,7 +422,7 @@ def widget( request ):
                     offset = request_data[ 'sliderOffset' ],
                     offset_float = request_data[ 'sliderOffsetFloat' ],
                     is_vertical = is_vertical,
-                    is_overlay_disabled = is_overlay_disabled
+                    is_overlay_enabled = request_data[ 'sliderOverlayToggle' ]
                 )
 
                 # Add a new extension to the extensionSlider table.
@@ -489,12 +457,6 @@ def widget( request ):
                 # Update the local variable for use in the widget template.
                 slider_orientation  = 'vertical'
 
-            # If the user selected the disabled the overlay...
-            if extension_in_db.is_overlay_disabled is True :
-
-                # Update the variable.
-                is_overlay_disabled = True
-
             # Update the local variables.
             before_image = extension_in_db.before_image
             before_label_text = extension_in_db.before_label_text
@@ -504,6 +466,7 @@ def widget( request ):
             after_alt_text = extension_in_db.after_alt_text
             slider_offset = extension_in_db.offset
             slider_offset_float = extension_in_db.offset_float
+            is_overlay_enabled = extension_in_db.is_overlay_enabled
 
     # Pass local variables to Django and render the template.
     return render(
@@ -521,6 +484,6 @@ def widget( request ):
             "slider_offset": slider_offset,
             "slider_offset_float": slider_offset_float,
             "slider_orientation": slider_orientation,
-            "slider_overlay_toggle": int( is_overlay_disabled )
+            "slider_overlay_toggle": int( is_overlay_enabled )
         }
     )

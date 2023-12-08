@@ -8,7 +8,7 @@
             <div class="d-flex align-items-start vh-100">
                 <!--Settings Navigation-->
                 <div class="nav flex-column nav-pills p-3 vh-100" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                    <button class="nav-link active" id="v-pills-main-tab" 
+                    <button class="nav-link active rounded-pill" id="v-pills-main-tab" 
                         data-bs-toggle="pill" 
                         data-bs-target="#v-pills-main" 
                         type="button" 
@@ -17,7 +17,7 @@
                         aria-selected="true">
                         Main
                     </button>
-                    <button class="nav-link" id="v-pills-images-tab"
+                    <button class="nav-link rounded-pill" id="v-pills-images-tab"
                         data-bs-toggle="pill"
                         data-bs-target="#v-pills-images"
                         type="button"
@@ -26,7 +26,7 @@
                         aria-selected="false">
                         Images
                     </button>
-                    <button class="nav-link" id="v-pills-options-tab"
+                    <button class="nav-link rounded-pill" id="v-pills-options-tab"
                         data-bs-toggle="pill"
                         data-bs-target="#v-pills-options"
                         type="button"
@@ -36,7 +36,7 @@
                         Options
                     </button>
                     <hr>
-                    <button class="nav-link" id="v-pills-support-tab"
+                    <button class="nav-link rounded-pill" id="v-pills-support-tab"
                         data-bs-toggle="pill"
                         data-bs-target="#v-pills-support"
                         type="button"
@@ -46,7 +46,7 @@
                         Support
                     </button>
                     <hr>
-                    <a class="nav-link" 
+                    <a class="nav-link rounded-pill" 
                         id="v-pills-upgrade"
                         href="https://www.wix.com/apps/upgrade/ace631c7-323b-47c9-969f-7f3421515171?appInstanceId={{instance_id}}"
                         target="_blank">
@@ -66,7 +66,7 @@
                                 <div class="col">
                                     <p><img src="{% static 'sliders/images/baie-logo.svg' %}" style="border-radius: 70px;" alt="Baie logo" width="70" height="70"/></p>
                                     <p class="fw-light">Easily compare two images with before-and-after image sliders.</p>
-                                    <button class="btn btn-primary" type="button" role="button" onclick="changeBaieSettingsTab( trigger = '#v-pills-images-tab' )">Add Images</button>
+                                    <button class="btn btn-primary rounded-pill" type="button" role="button" onclick="changeBaieSettingsTab( trigger = '#v-pills-images-tab' )">Add Images</button>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +108,7 @@
                                     <strong>Before</strong>
                                 </div>
                                 <div class="col" style="text-align: right;">
-                                    <button class="btn btn-primary btn-sm update-baie-images-toggle" type="button">Select Image</button>
+                                    <button class="btn btn-primary btn-sm rounded-pill update-baie-images-toggle" type="button">Select Image</button>
                                 </div>
                             </div>
 
@@ -160,7 +160,7 @@
                                     <strong>After</strong>
                                 </div>
                                 <div class="col" style="text-align: right;">
-                                    <button class="btn btn-primary btn-sm update-baie-images-toggle" type="button">Select Image</button>
+                                    <button class="btn btn-primary btn-sm rounded-pill update-baie-images-toggle" type="button">Select Image</button>
                                 </div>
                             </div>
                             
@@ -211,7 +211,7 @@
                         </div>
 
                         <!--Slider Offset-->
-                        <div class="container px-4 py-2">
+                        <div class="container px-4 pt-2 pb-1">
                             <div class="row">
                                 <div class="col-9">
                                     <label for="sliderOffsetRange" class="form-label"><strong>Slider Offset</strong></label><br>
@@ -229,34 +229,64 @@
                             <div class="row">
                                 <div class="col-12">
                                     <label for="sliderOrientation" class="form-label"><strong>Slider Orientation</strong></label><br>
-                                    <div class="form-check">
-                                        <input 
-                                            class="form-check-input"
-                                            type="radio"
-                                            name="sliderOrientation"
-                                            id="sliderOrientation1"
-                                            value="horizontal"
-                                            onchange="updateBaieExtension( this )"
-                                            {{ horizontal_checked }}
-                                        >
-                                        <label class="form-check-label" for="sliderOrientation1">
-                                          Horizontal
-                                        </label>
-                                      </div>
-                                      <div class="form-check">
-                                        <input 
-                                            class="form-check-input"
-                                            type="radio"
-                                            name="sliderOrientation"
-                                            id="sliderOrientation2"
-                                            value="vertical"
-                                            onchange="updateBaieExtension( this )"
-                                            {{ vertical_checked }}
-                                        >
-                                        <label class="form-check-label" for="sliderOrientation2">
-                                          Vertical
-                                        </label>
-                                      </div>
+                                    <div class="form-check ps-0">
+                                        <div class="btn-group" role="group" aria-label="slider orientation radio toggle button group">
+                                            <input 
+                                                type="radio" 
+                                                class="btn-check" 
+                                                name="sliderOrientation"
+                                                id="sliderOrientation1"
+                                                value="horizontal"
+                                                onchange="updateBaieExtension( this )"
+                                                {% if is_vertical == False %}
+                                                    checked
+                                                {% endif %}
+                                                {% if is_free == True %}
+                                                    disabled
+                                                {% endif %}
+                                            >
+                                            <label
+                                                class="btn btn-outline-primary"
+                                                for="sliderOrientation1"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Slide left and right."
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-vr" viewBox="0 0 16 16">
+                                                    <path d="M3 12V4a1 1 0 0 1 1-1h2.5V2H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5v-1H4a1 1 0 0 1-1-1m6.5 1v1H12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H9.5v1H12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1zM8 16a.5.5 0 0 1-.5-.5V.5a.5.5 0 0 1 1 0v15a.5.5 0 0 1-.5.5"/>
+                                                </svg>
+                                                <span class="visually-hidden">Slide left and right</span>
+                                            </label>
+
+                                            <input
+                                                type="radio"
+                                                class="btn-check"
+                                                name="sliderOrientation"
+                                                id="sliderOrientation2"
+                                                value="vertical"
+                                                onchange="updateBaieExtension( this )"
+                                                {% if is_vertical == True %}
+                                                    checked
+                                                {% endif %}
+                                                {% if is_free == True %}
+                                                    disabled
+                                                {% endif %}
+                                            >
+                                            <label
+                                                class="btn btn-outline-primary"
+                                                for="sliderOrientation2"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Slide up and down."
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hr" viewBox="0 0 16 16">
+                                                    <path d="M12 3H4a1 1 0 0 0-1 1v2.5H2V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2.5h-1V4a1 1 0 0 0-1-1M2 9.5h1V12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9.5h1V12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm-1.5-2a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1z"></path>
+                                                </svg>
+                                                <span class="visually-hidden">Slide up and down</span>
+                                            </label>
+                                        </div>
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -269,9 +299,55 @@
                                         class="form-label"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top"
-                                        data-bs-title="Toggle the before and after labels.">
-
+                                        data-bs-title="Toggle the visibility of the before and after labels."
+                                    >
                                         <strong>Slider Overlay</strong>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                        </svg>
+                                    </label><br>
+
+                                    <div class="form-check form-switch">
+
+                                        <input 
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            role="switch"
+                                            name="sliderOverlayToggle"
+                                            id="sliderOverlayToggle"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if is_overlay_enabled == True %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label class="form-check-label" for="sliderOverlayToggle" id="sliderOverlayToggleLabel">
+                                            {% if is_overlay_enabled == True %}
+                                                Enabled
+                                            {% else %}
+                                                Disabled
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Move On Hover-->
+                        <div class="container px-4 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="sliderMoveOnHoverToggle"
+                                        class="form-label"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-title="Move slider on mouse hover instead of clicking and dragging the handle."
+                                    >
+                                        <strong>Move slider on mouse hover?</strong>
 
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -286,12 +362,69 @@
                                             class="form-check-input"
                                             type="checkbox"
                                             role="switch"
-                                            name="sliderOverlayToggle"
-                                            id="sliderOverlayToggle"
+                                            name="sliderMoveOnHoverToggle"
+                                            id="sliderMoveOnHoverToggle"
                                             onchange="updateBaieExtension( this )"
-                                            {{ overlay_enabled_checked }}
+                                            {% if is_overlay_enabled == True %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
                                         >
-                                        <label class="form-check-label" for="sliderOverlayToggle">Enabled</label>
+                                        <label class="form-check-label" for="sliderMoveOnHoverToggle" id="sliderMoveOnHoverToggleLabel">
+                                            {% if is_overlay_enabled == True %}
+                                                Enabled
+                                            {% else %}
+                                                Disabled
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Click to Move-->
+                        <div class="container px-4 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="sliderClickToMoveToggle"
+                                        class="form-label"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-title="Allow a user to click (or tap) anywhere on the image to move the slider to that location."
+                                    >
+                                        <strong>Click to move?</strong>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                        </svg>
+                                    </label><br>
+
+                                    <div class="form-check form-switch">
+
+                                        <input 
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            role="switch"
+                                            name="sliderClickToMoveToggle"
+                                            id="sliderClickToMoveToggle"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if is_overlay_enabled == True %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label class="form-check-label" for="sliderClickToMoveToggle" id="sliderClickToMoveToggleLabel">
+                                            {% if is_overlay_enabled == True %}
+                                                Enabled
+                                            {% else %}
+                                                Disabled
+                                            {% endif %}
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -393,6 +526,7 @@
             var sliderOffsetFloat = parseFloat( sliderOffset ) / 100;
             var sliderOrientation = document.getElementsByName( "sliderOrientation" );
             var sliderOverlayToggle = document.getElementsByName( "sliderOverlayToggle" );
+            var sliderOverlayToggleLabel =  document.getElementById( "sliderOverlayToggleLabel" );
 
             // Extract value from Slider Orientation radio options.
             // Iterate over the radio options.
@@ -410,12 +544,13 @@
             // Iterate over the items.
             for( i = 0; i < sliderOverlayToggle.length; i++ ){
 
-                // If the current radio option is checked.
-                if( sliderOverlayToggle[ i ].checked ){
+                // Warning: This label change must come before the subsequent function
+                // overwrites sliderOverlayToggle with 0 or 1.
+                sliderOverlayToggleLabel.innerHTML = ( sliderOverlayToggle[ i ].checked ) ? "Enabled" : "Disabled";
 
-                    // Store the value of the checked option.
-                    sliderOverlayToggle = sliderOverlayToggle[ i ].value;
-                }
+                // Update the value based on the checked status.
+                sliderOverlayToggle = ( sliderOverlayToggle[ i ].checked ) ? 1 : 0;
+                
             }
 
             // Prepare message.
