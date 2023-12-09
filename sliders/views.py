@@ -271,8 +271,10 @@ def settings( request ):
     slider_offset = 50
     slider_offset_float = 0.5
     is_overlay_enabled = True
+    is_move_on_hover_enabled = False
+    is_move_on_click_enabled = False
     is_vertical = False
-    is_free = True
+    is_free = False # False for dev environmet. Change to True for production.
 
     # If the user submitted a GET request...
     if request.method == 'GET':
@@ -290,17 +292,19 @@ def settings( request ):
             if extension_in_db is not None:
 
                 # Update the local variables with the requested_extension values.
-                instance_id         = extension_in_db.instance_id
-                before_image        = extension_in_db.before_image
-                before_label_text   = extension_in_db.before_label_text
-                before_alt_text     = extension_in_db.before_alt_text
-                after_image         = extension_in_db.after_image
-                after_label_text    = extension_in_db.after_label_text
-                after_alt_text      = extension_in_db.after_alt_text
-                slider_offset       = extension_in_db.offset
-                slider_offset_float = extension_in_db.offset_float
-                is_overlay_enabled  = extension_in_db.is_overlay_enabled
-                is_vertical         = extension_in_db.is_vertical
+                instance_id                 = extension_in_db.instance_id
+                before_image                = extension_in_db.before_image
+                before_label_text           = extension_in_db.before_label_text
+                before_alt_text             = extension_in_db.before_alt_text
+                after_image                 = extension_in_db.after_image
+                after_label_text            = extension_in_db.after_label_text
+                after_alt_text              = extension_in_db.after_alt_text
+                slider_offset               = extension_in_db.offset
+                slider_offset_float         = extension_in_db.offset_float
+                is_overlay_enabled          = extension_in_db.is_overlay_enabled
+                is_move_on_hover_enabled    = extension_in_db.is_move_on_hover_enabled
+                is_move_on_click_enabled    = extension_in_db.is_move_on_click_enabled
+                is_vertical                 = extension_in_db.is_vertical
 
     # Pass local variables to Django and render the template.
     return render(
@@ -320,7 +324,9 @@ def settings( request ):
             "slider_offset": slider_offset,
             "slider_offset_float": slider_offset_float,
             "is_vertical": is_vertical,
-            "is_overlay_enabled": is_overlay_enabled
+            "is_overlay_enabled": is_overlay_enabled,
+            "is_move_on_hover_enabled": is_move_on_hover_enabled,
+            "is_move_on_click_enabled": is_move_on_click_enabled
         },
     )
 
@@ -349,6 +355,9 @@ def widget( request ):
     slider_offset_float = 0.5
     slider_orientation = 'horizontal'
     is_vertical = False
+    is_overlay_enabled = True
+    is_move_on_hover_enabled = False
+    is_move_on_click_enabled = False
 
     # If the user submitted a POST request...
     if request.method == 'POST':
@@ -389,6 +398,8 @@ def widget( request ):
                 extension_in_db.offset_float = request_data[ 'sliderOffsetFloat' ]
                 extension_in_db.is_vertical = is_vertical
                 extension_in_db.is_overlay_enabled = request_data[ 'sliderOverlayToggle' ]
+                extension_in_db.is_move_on_hover_enabled = request_data[ 'sliderMoveOnHoverToggle' ]
+                extension_in_db.is_move_on_click_enabled = request_data[ 'sliderMoveOnClickToggle' ]
 
                 # Add a new extension to the Extension table.
                 extension_in_db.save()
@@ -422,7 +433,9 @@ def widget( request ):
                     offset = request_data[ 'sliderOffset' ],
                     offset_float = request_data[ 'sliderOffsetFloat' ],
                     is_vertical = is_vertical,
-                    is_overlay_enabled = request_data[ 'sliderOverlayToggle' ]
+                    is_overlay_enabled = request_data[ 'sliderOverlayToggle' ],
+                    is_move_on_hover_enabled = request_data[ 'sliderMoveOnHoverToggle' ],
+                    is_move_on_click_enabled = request_data[ 'sliderMoveOnClickToggle' ]
                 )
 
                 # Add a new extension to the extensionSlider table.
@@ -467,6 +480,8 @@ def widget( request ):
             slider_offset = extension_in_db.offset
             slider_offset_float = extension_in_db.offset_float
             is_overlay_enabled = extension_in_db.is_overlay_enabled
+            is_move_on_hover_enabled = extension_in_db.is_move_on_hover_enabled
+            is_move_on_click_enabled = extension_in_db.is_move_on_click_enabled
 
     # Pass local variables to Django and render the template.
     return render(
@@ -484,6 +499,8 @@ def widget( request ):
             "slider_offset": slider_offset,
             "slider_offset_float": slider_offset_float,
             "slider_orientation": slider_orientation,
-            "slider_overlay_toggle": int( is_overlay_enabled )
+            "slider_overlay_toggle": int( not is_overlay_enabled ),
+            "slider_move_on_hover_toggle": int( is_move_on_hover_enabled ),
+            "slider_move_on_click_toggle": int( is_move_on_click_enabled )
         }
     )

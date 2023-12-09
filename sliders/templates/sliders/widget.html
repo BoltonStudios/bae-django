@@ -15,7 +15,10 @@
             data-slider-offset="{{slider_offset}}"
             data-slider-offset-float="{{slider_offset_float}}"
             data-slider-orientation="{{slider_orientation}}"
+            data-slider-mouseover-action="{{slider_mouseover_action}}"
             data-slider-overlay-toggle="{{slider_overlay_toggle}}"
+            data-slider-hover-toggle="{{slider_move_on_hover_toggle}}"
+            data-slider-click-toggle="{{slider_move_on_click_toggle}}"
         >
             <!-- The before image is first -->
             {% if before_image != '' %}
@@ -61,10 +64,13 @@
             slider.dataset.sliderOffset = e.sliderOffset;
             slider.dataset.sliderOffsetFloat = e.sliderOffsetFloat;
             slider.dataset.sliderOrientation = e.sliderOrientation;
+            slider.dataset.sliderMouseoverAction = e.sliderMouseoverAction;
             slider.dataset.sliderOverlayToggle = e.sliderOverlayToggle;
+            slider.dataset.sliderMoveOnHoverToggle = e.sliderMoveOnHoverToggle;
+            slider.dataset.sliderMoveOnClickToggle = e.sliderMoveOnClickToggle;
 
-            console.log( "slider.dataset.sliderOverlayToggle is..." );
-            console.log( slider.dataset.sliderOverlayToggle );
+            console.log( "slider.dataset.sliderMoveOnHoverToggle is..." );
+            console.log( slider.dataset.sliderMoveOnHoverToggle );
 
             // Update image attributes.
             beforeImage.src = e.beforeImage;
@@ -86,6 +92,8 @@
                 default_offset_pct: e.sliderOffsetFloat, // How much of the before image is visible when the page loads.
                 orientation: e.sliderOrientation, // Orientation of the before and after images ('horizontal' or 'vertical')
                 no_overlay: e.sliderOverlayToggle, //Do not show the overlay with before and after
+                move_slider_on_hover: e.MoveOnHoverToggle,
+                click_to_move: e.MoveOnClickToggle
             });
 
             //
@@ -139,7 +147,10 @@
                     sliderOffset: slider.dataset.sliderOffset,
                     sliderOffsetFloat: slider.dataset.sliderOffsetFloat,
                     sliderOrientation: slider.dataset.sliderOrientation,
-                    sliderOverlayToggle: slider.dataset.sliderOverlayToggle
+                    sliderMouseoverAction: slider.dataset.sliderMouseoverAction,
+                    sliderOverlayToggle: slider.dataset.sliderOverlayToggle,
+                    sliderMoveOnHoverToggle: slider.dataset.sliderMoveOnHoverToggle,
+                    sliderMoveOnClickToggle: slider.dataset.sliderMoveOnClickToggle
                 }),
                 headers: {
                 "Content-type": "application/json; charset=UTF-8"
@@ -157,9 +168,8 @@
                 default_offset_pct: Number( "{{slider_offset_float}}" ), // How much of the before image is visible when the page loads
                 orientation: "{{slider_orientation}}", // Orientation of the before and after images ('horizontal' or 'vertical')
                 no_overlay: Number( "{{slider_overlay_toggle}}" ), //Do not show the overlay with before and after
-                //move_slider_on_hover: true, // Move slider on mouse hover?
-                //move_with_handle_only: true, // Allow a user to swipe anywhere on the image to control slider movement. 
-                //click_to_move: false // Allow a user to click (or tap) anywhere on the image to move the slider to that location.
+                move_slider_on_hover: Number( "{{slider_move_on_hover_toggle}}" ), // Move slider on mouse hover?
+                click_to_move: Number( "{{slider_move_on_click_toggle}}" ) // Allow a user to click (or tap) anywhere on the image to move the slider to that location.
             });
         });
        </script>

@@ -26,20 +26,22 @@ class Extension( models.Model ):
     """
     Class to define the Extension table.
     """
-    extension_id        = models.CharField( primary_key=True, max_length=255 )
-    instance_id         = models.ForeignKey( User, on_delete=models.CASCADE )
-    before_image        = models.TextField()
-    before_label_text   = models.CharField( max_length=255 )
-    before_alt_text     = models.CharField( max_length=255 )
-    after_image         = models.TextField()
-    after_label_text    = models.CharField( max_length=255 )
-    after_alt_text      = models.CharField( max_length=255 )
-    offset              = models.IntegerField()
-    offset_float        = models.FloatField()
-    is_vertical         = models.BooleanField( default=False )
-    is_overlay_enabled  = models.BooleanField( default=True )
-    created             = models.DateTimeField( auto_now_add=True )
-    last_modified       = models.DateTimeField( auto_now=True )
+    extension_id                = models.CharField( primary_key=True, max_length=255 )
+    instance_id                 = models.ForeignKey( User, on_delete=models.CASCADE )
+    before_image                = models.TextField()
+    before_label_text           = models.CharField( max_length=255 )
+    before_alt_text             = models.CharField( max_length=255 )
+    after_image                 = models.TextField()
+    after_label_text            = models.CharField( max_length=255 )
+    after_alt_text              = models.CharField( max_length=255 )
+    offset                      = models.IntegerField()
+    offset_float                = models.FloatField()
+    is_vertical                 = models.BooleanField( default=False )
+    is_overlay_enabled          = models.BooleanField( default=True )
+    is_move_on_hover_enabled    = models.BooleanField( default=False )
+    is_move_on_click_enabled    = models.BooleanField( default=False )
+    created                     = models.DateTimeField( auto_now_add=True )
+    last_modified               = models.DateTimeField( auto_now=True )
 
     def __str__( self ):
         return f'<slider { self.extension_id } in { self.instance_id }>'

@@ -117,7 +117,7 @@
                                 <div class="col" style="text-align: center;">
 
                                     <!--Image-->
-                                    <img src="{{ before_image }}" class="img-thumbnail mb-3 update-baie-images-toggle" width="220" height="113" />
+                                    <img src="{{ before_image }}" class="img-thumbnail mb-3 update-baie-images-toggle" width="250" height="133" />
                                     
                                     <!--Before Label-->
                                     <div class="input-group mb-2">
@@ -169,7 +169,7 @@
                                 <div class="col" style="text-align: center;">
 
                                     <!--Image-->
-                                    <img src="{{ after_image }}" class="img-thumbnail mb-3 update-baie-images-toggle" width="220" height="113" />
+                                    <img src="{{ after_image }}" class="img-thumbnail mb-3 update-baie-images-toggle" width="250" height="133" />
                                     
                                     <!--After Label-->
                                     <div class="input-group mb-2">
@@ -291,6 +291,67 @@
                             </div>
                         </div>
 
+                        <!--Mouseover Action-->
+                        <div class="container px-4 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="sliderMouseoverAction" class="form-label"><strong>Slider Mouseover Action</strong></label><br>
+                                    <div class="form-check ps-0">
+                                        <div class="btn-group w-100" role="group" aria-label="slider mouse over action radio toggle button group">
+                                            <input 
+                                                type="radio" 
+                                                class="btn-check" 
+                                                name="sliderMouseoverAction"
+                                                id="sliderMouseoverAction1"
+                                                value="1"
+                                                onchange="updateBaieExtension( this )"
+                                                {% if is_vertical == False %}
+                                                    checked
+                                                {% endif %}
+                                                {% if is_free == True %}
+                                                    disabled
+                                                {% endif %}
+                                            >
+                                            <label
+                                                class="btn btn-outline-primary w-50"
+                                                for="sliderMouseoverAction1"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Show the overlay with before and after labels."
+                                            >
+                                                <span>Show Overlay</span>
+                                            </label>
+
+                                            <input
+                                                type="radio"
+                                                class="btn-check"
+                                                name="sliderMouseoverAction"
+                                                id="sliderMouseoverAction2"
+                                                value="0"
+                                                onchange="updateBaieExtension( this )"
+                                                {% if is_vertical == True %}
+                                                    checked
+                                                {% endif %}
+                                                {% if is_free == True %}
+                                                    disabled
+                                                {% endif %}
+                                            >
+                                            <label
+                                                class="btn btn-outline-primary w-50"
+                                                for="sliderMouseoverAction2"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                data-bs-title="Automatically move the slider instead of clicking and dragging the handle."
+                                            >
+                                                <span>Move Slider</span>
+                                            </label>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!--Overlay Disabled-->
                         <div class="container px-4 py-2">
                             <div class="row">
@@ -301,7 +362,7 @@
                                         data-bs-placement="top"
                                         data-bs-title="Toggle the visibility of the before and after labels."
                                     >
-                                        <strong>Slider Overlay</strong>
+                                        <strong>Show overlay on mouse hover?</strong>
 
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
@@ -353,7 +414,6 @@
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                             <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                                         </svg>
-
                                     </label><br>
 
                                     <div class="form-check form-switch">
@@ -365,7 +425,7 @@
                                             name="sliderMoveOnHoverToggle"
                                             id="sliderMoveOnHoverToggle"
                                             onchange="updateBaieExtension( this )"
-                                            {% if is_overlay_enabled == True %}
+                                            {% if is_move_on_hover_enabled == True %}
                                                 checked
                                             {% endif %}
                                             {% if is_free == True %}
@@ -373,7 +433,7 @@
                                             {% endif %}
                                         >
                                         <label class="form-check-label" for="sliderMoveOnHoverToggle" id="sliderMoveOnHoverToggleLabel">
-                                            {% if is_overlay_enabled == True %}
+                                            {% if is_move_on_hover_enabled == True %}
                                                 Enabled
                                             {% else %}
                                                 Disabled
@@ -388,7 +448,7 @@
                         <div class="container px-4 py-2">
                             <div class="row">
                                 <div class="col-12">
-                                    <label for="sliderClickToMoveToggle"
+                                    <label for="sliderOnClickToggle"
                                         class="form-label"
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top"
@@ -408,18 +468,18 @@
                                             class="form-check-input"
                                             type="checkbox"
                                             role="switch"
-                                            name="sliderClickToMoveToggle"
-                                            id="sliderClickToMoveToggle"
+                                            name="sliderMoveOnClickToggle"
+                                            id="sliderMoveOnClickToggle"
                                             onchange="updateBaieExtension( this )"
-                                            {% if is_overlay_enabled == True %}
+                                            {% if is_move_on_click_enabled == True %}
                                                 checked
                                             {% endif %}
                                             {% if is_free == True %}
                                                 disabled
                                             {% endif %}
                                         >
-                                        <label class="form-check-label" for="sliderClickToMoveToggle" id="sliderClickToMoveToggleLabel">
-                                            {% if is_overlay_enabled == True %}
+                                        <label class="form-check-label" for="sliderMoveOnClickToggle" id="sliderMoveOnClickToggleLabel">
+                                            {% if is_move_on_click_enabled == True %}
                                                 Enabled
                                             {% else %}
                                                 Disabled
@@ -495,7 +555,7 @@
                 function( data ){
                     // onSuccess
                     // fullSizeImageURL = Wix.Utils.Media.getImageUrl( data.relativeUri );
-                    thumbnailURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 220, 113 )
+                    thumbnailURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 250, 133 )
                     imageURL = Wix.Utils.Media.getResizedImageUrl( data.relativeUri, 637, 328 )
                     
                     // Add the image URL to the data attribute.
@@ -525,8 +585,13 @@
             var sliderOffset    = document.getElementById( "sliderOffsetRange" ).value;
             var sliderOffsetFloat = parseFloat( sliderOffset ) / 100;
             var sliderOrientation = document.getElementsByName( "sliderOrientation" );
+            var sliderMouseoverAction = document.getElementsByName( "sliderMouseoverAction" );
             var sliderOverlayToggle = document.getElementsByName( "sliderOverlayToggle" );
             var sliderOverlayToggleLabel =  document.getElementById( "sliderOverlayToggleLabel" );
+            var sliderMoveOnHoverToggle = document.getElementsByName( "sliderMoveOnHoverToggle" );
+            var sliderMoveOnHoverToggleLabel =  document.getElementById( "sliderMoveOnHoverToggleLabel" );
+            var sliderMoveOnClickToggle = document.getElementsByName( "sliderMoveOnClickToggle" );
+            var sliderMoveOnClickToggleLabel =  document.getElementById( "sliderMoveOnClickToggleLabel" );
 
             // Extract value from Slider Orientation radio options.
             // Iterate over the radio options.
@@ -537,6 +602,24 @@
 
                     // Store the value of the checked option.
                     sliderOrientation = sliderOrientation[ i ].value;
+                }
+            }
+
+            // Extract value from Slider Mouseover Action radio options.
+            // Iterate over the radio options.
+            for( i = 0; i < sliderMouseoverAction.length; i++ ){
+
+            // If the current radio option is checked.
+            if( sliderMouseoverAction[ i ].checked ){
+
+                    // Store the value of the checked option.
+                    sliderMouseoverAction = sliderMouseoverAction[ i ].value;
+
+                    // Update the value based on the checked status.
+                    sliderOverlayToggle = ( sliderMouseoverAction == 1 ) ? 1 : 0;
+
+                    // Update the value based on the checked status.
+                    sliderMoveOnHoverToggle = ( sliderMouseoverAction == 1 ) ? 0 : 1;
                 }
             }
             
@@ -552,6 +635,32 @@
                 sliderOverlayToggle = ( sliderOverlayToggle[ i ].checked ) ? 1 : 0;
                 
             }
+            
+            // Extract value from Slider Move On Hover Toggle radio or checkbox options.
+            // Iterate over the items.
+            for( i = 0; i < sliderMoveOnHoverToggle.length; i++ ){
+
+                // Warning: This label change must come before the subsequent function
+                // overwrites sliderMoveOnHoverToggle with 0 or 1.
+                sliderMoveOnHoverToggleLabel.innerHTML = ( sliderMoveOnHoverToggle[ i ].checked ) ? "Enabled" : "Disabled";
+
+                // Update the value based on the checked status.
+                sliderMoveOnHoverToggle = ( sliderMoveOnHoverToggle[ i ].checked ) ? 1 : 0;
+                
+            }
+            
+            // Extract value from Slider Move On Click Toggle radio or checkbox options.
+            // Iterate over the items.
+            for( i = 0; i < sliderMoveOnClickToggle.length; i++ ){
+
+                // Warning: This label change must come before the subsequent function
+                // overwrites sliderMoveOnClickToggle with 0 or 1.
+                sliderMoveOnClickToggleLabel.innerHTML = ( sliderMoveOnClickToggle[ i ].checked ) ? "Enabled" : "Disabled";
+
+                // Update the value based on the checked status.
+                sliderMoveOnClickToggle = ( sliderMoveOnClickToggle[ i ].checked ) ? 1 : 0;
+                
+            }
 
             // Prepare message.
             var message = {
@@ -564,7 +673,10 @@
                 sliderOffset: sliderOffset,
                 sliderOffsetFloat: sliderOffsetFloat,
                 sliderOrientation: sliderOrientation,
-                sliderOverlayToggle: sliderOverlayToggle
+                sliderMouseoverAction: sliderMouseoverAction,
+                sliderOverlayToggle: sliderOverlayToggle,
+                sliderMoveOnHoverToggle: sliderMoveOnHoverToggle,
+                sliderMoveOnClickToggle: sliderMoveOnClickToggle
             };
 
             // Manipulate settings panel.
