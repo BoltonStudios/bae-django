@@ -270,14 +270,14 @@ def settings( request ):
     after_alt_text = ''
     slider_offset = 50
     slider_offset_float = 0.5
-    is_overlay_enabled = True
+    mouseover_action = 1
     is_move_on_click_enabled = False
     is_vertical = False
     is_free = False # False for dev environmet. Change to True for production.
 
     # If the user submitted a GET request...
     if request.method == 'GET':
-        
+
         #
         if 'origCompId' in request.GET.keys() :
 
@@ -300,9 +300,10 @@ def settings( request ):
                 after_alt_text              = extension_in_db.after_alt_text
                 slider_offset               = extension_in_db.offset
                 slider_offset_float         = extension_in_db.offset_float
-                is_overlay_enabled          = extension_in_db.is_overlay_enabled
+                mouseover_action            = extension_in_db.mouseover_action
                 is_move_on_click_enabled    = extension_in_db.is_move_on_click_enabled
                 is_vertical                 = extension_in_db.is_vertical
+
 
     # Pass local variables to Django and render the template.
     return render(
@@ -322,7 +323,7 @@ def settings( request ):
             "slider_offset": slider_offset,
             "slider_offset_float": slider_offset_float,
             "is_vertical": is_vertical,
-            "is_overlay_enabled": is_overlay_enabled,
+            "mouseover_action": mouseover_action,
             "is_move_on_click_enabled": is_move_on_click_enabled
         },
     )
@@ -352,7 +353,9 @@ def widget( request ):
     slider_offset_float = 0.5
     slider_orientation = 'horizontal'
     is_vertical = False
-    is_overlay_enabled = True
+    mouseover_action = 1
+    slider_no_overlay = False
+    slider_move_slider_on_hover = False
     is_move_on_click_enabled = False
 
     # If the user submitted a POST request...
@@ -393,7 +396,7 @@ def widget( request ):
                 extension_in_db.offset = request_data[ 'sliderOffset' ]
                 extension_in_db.offset_float = request_data[ 'sliderOffsetFloat' ]
                 extension_in_db.is_vertical = is_vertical
-                extension_in_db.is_overlay_enabled = request_data[ 'sliderMouseoverAction' ]
+                extension_in_db.mouseover_action = request_data[ 'sliderMouseoverAction' ]
                 extension_in_db.is_move_on_click_enabled = request_data[ 'sliderMoveOnClickToggle' ]
 
                 # Add a new extension to the Extension table.
@@ -428,7 +431,7 @@ def widget( request ):
                     offset = request_data[ 'sliderOffset' ],
                     offset_float = request_data[ 'sliderOffsetFloat' ],
                     is_vertical = is_vertical,
-                    is_overlay_enabled = request_data[ 'sliderMouseoverAction' ],
+                    mouseover_action = request_data[ 'sliderMouseoverAction' ],
                     is_move_on_click_enabled = request_data[ 'sliderMoveOnClickToggle' ]
                 )
 
@@ -473,12 +476,22 @@ def widget( request ):
             after_alt_text = extension_in_db.after_alt_text
             slider_offset = extension_in_db.offset
             slider_offset_float = extension_in_db.offset_float
-            is_overlay_enabled = extension_in_db.is_overlay_enabled
+            mouseover_action = extension_in_db.mouseover_action
             is_move_on_click_enabled = extension_in_db.is_move_on_click_enabled
 
+            # Move slider on mouseover.
+            if mouseover_action == 2:
+                slider_no_overlay = False
+                slider_move_slider_on_hover = True
+
+            # Do nothing on mouseover.
+            if mouseover_action == 3:
+                slider_no_overlay = True
+                slider_move_slider_on_hover = False
+
     # Pass local variables to Django and render the template.
-    print( "int( is_overlay_enabled ) is ")
-    print( int( is_overlay_enabled ) )
+    print( "int( mouseover_action ) is ")
+    print( int( mouseover_action ) )
     return render(
         request,
         "sliders/widget.html",
@@ -494,7 +507,9 @@ def widget( request ):
             "slider_offset": slider_offset,
             "slider_offset_float": slider_offset_float,
             "slider_orientation": slider_orientation,
-            "slider_mouseover_action": int( is_overlay_enabled ),
+            "slider_mouseover_action": int( mouseover_action ),
+            "slider_no_overlay": int( slider_no_overlay ),
+            "slider_move_slider_on_hover": int( slider_move_slider_on_hover ),
             "slider_move_on_click_toggle": int( is_move_on_click_enabled )
         }
     )

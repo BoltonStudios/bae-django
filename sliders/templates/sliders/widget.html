@@ -51,6 +51,8 @@
             var slider = document.getElementById( "{{extension_id}}-twentytwenty" );
             var beforeImage = document.getElementById( "{{extension_id}}-before-image" );
             var afterImage = document.getElementById( "{{extension_id}}-after-image" );
+            var noOverlay = false;
+            var moveOnHover = false;
 
             // Update data attributes.
             slider.dataset.beforeImage = e.beforeImage;
@@ -71,6 +73,24 @@
             beforeImage.alt = e.beforeAltText;
             afterImage.alt  = e.afterAltText;
 
+            // Handle logic for mouseover action.
+            switch( e.sliderMouseoverAction ){
+
+                // Move slider on hover.
+                case 2 :
+                    noOverlay = false
+                    moveOnHover = true;
+                    break;
+                // Do nothing on mouseover.
+                case 3:
+                    noOverlay = true;
+                    moveOnHover = false;
+                    break;
+                // Show overlay on mouseover.
+                default :
+                    break;
+            }
+
             // Reset TwentyTwenty elements.
             jQuery("#{{extension_id}}-twentytwenty").unwrap();
             jQuery("#{{extension_id}}-twentytwenty .twentytwenty-overlay").remove();
@@ -84,8 +104,8 @@
                 after_label: e.afterLabelText, // Set a custom after label.
                 default_offset_pct: e.sliderOffsetFloat, // How much of the before image is visible when the page loads.
                 orientation: e.sliderOrientation, // Orientation of the before and after images ('horizontal' or 'vertical')
-                no_overlay: 1 - e.sliderMouseoverAction, //Do not show the overlay with before and after
-                move_slider_on_hover: 1 - e.sliderMouseoverAction, // Boolean expressed as an int.
+                no_overlay: noOverlay, //Do not show the overlay with before and after
+                move_slider_on_hover: moveOnHover, // Boolean expressed as an int.
                 click_to_move: e.MoveOnClickToggle
             });
 
@@ -153,6 +173,10 @@
        <script>
         console.log( "slider_mouseover_action is..." );
         console.log( Number( "{{slider_mouseover_action}}" ) );
+        console.log( "slider_no_overlay is..." );
+        console.log( Number( "{{slider_no_overlay}}" ) );
+        console.log( "slider_move_slider_on_hover is..." );
+        console.log( Number( "{{slider_move_slider_on_hover}}" ) );
         // Initialize TwentyTwenty
         $(function(){
             $("#{{extension_id}}-twentytwenty").twentytwenty({
@@ -160,8 +184,8 @@
                 after_label: "{{after_label_text}}", // Set a custom after label.
                 default_offset_pct: Number( "{{slider_offset_float}}" ), // How much of the before image is visible when the page loads
                 orientation: "{{slider_orientation}}", // Orientation of the before and after images ('horizontal' or 'vertical')
-                no_overlay: 1 - Number( "{{slider_mouseover_action}}" ), // Do not show the overlay with before and after
-                move_slider_on_hover: 1 - Number( "{{slider_mouseover_action}}" ), // Move slider on mouse hover?
+                no_overlay: Number( "{{slider_no_overlay}}" ), // Do not show the overlay with before and after
+                move_slider_on_hover: Number( "{{slider_move_slider_on_hover}}" ), // Move slider on mouse hover?
                 click_to_move: Number( "{{slider_move_on_click_toggle}}" ) // Allow a user to click (or tap) anywhere on the image to move the slider to that location.
             });
         });

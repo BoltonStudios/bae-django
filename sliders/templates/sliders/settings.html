@@ -205,7 +205,7 @@
                         <div class="container-fluid text-bg-light mb-2 px-4 py-3 border-bottom">
                             <div class="row">
                                 <div class="col">
-                                    <h5 class="fw-light">Options</h5>
+                                    <h5 class="fw-light">Slider Options</h5>
                                 </div>
                             </div>
                         </div>
@@ -214,7 +214,7 @@
                         <div class="container px-4 pt-2 pb-1">
                             <div class="row">
                                 <div class="col-9">
-                                    <label for="sliderOffsetRange" class="form-label"><strong>Slider Offset</strong></label><br>
+                                    <label for="sliderOffsetRange" class="form-label"><strong>Offset</strong></label><br>
                                     <input type="range" class="form-range" id="sliderOffsetRange" onchange="updateBaieExtension()" value="{{ slider_offset }}">
                                 </div>
                                 <div class="col-3">
@@ -228,7 +228,7 @@
                         <div class="container px-4 py-2">
                             <div class="row">
                                 <div class="col-12">
-                                    <label for="sliderOrientation" class="form-label"><strong>Slider Orientation</strong></label><br>
+                                    <label for="sliderOrientation" class="form-label"><strong>Orientation</strong></label><br>
                                     <div class="form-check ps-0">
                                         <div class="btn-group" role="group" aria-label="slider orientation radio toggle button group">
                                             <input 
@@ -292,7 +292,7 @@
                         </div>
 
                         <!--Mouseover Action-->
-                        <div class="container px-4 py-2">
+                        <div class="container px-4 pt-3 pb-2">
                             <div class="row">
                                 <div class="col-12">
                                     <label for="sliderMouseoverAction" class="form-label"
@@ -300,60 +300,80 @@
                                             data-bs-placement="top"
                                             data-bs-title="Choose what happens when you hover over the slider."
                                         >
-                                        <strong>Slider Mouseover Action</strong>
+                                        <strong>Mouseover Action</strong>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                                             <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                             <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                                         </svg>
                                     </label><br>
-                                    <div class="form-check ps-0">
-                                        <div class="btn-group w-100" role="group" aria-label="slider mouse over action radio toggle button group">
-                                            <input 
-                                                type="radio" 
-                                                class="btn-check" 
-                                                name="sliderMouseoverAction"
-                                                id="sliderMouseoverAction1"
-                                                value="1"
-                                                onchange="updateBaieExtension( this )"
-                                                {% if is_overlay_enabled == True %}
-                                                    checked
-                                                {% endif %}
-                                                {% if is_free == True %}
-                                                    disabled
-                                                {% endif %}
-                                            >
-                                            <label
-                                                class="btn btn-outline-primary w-50"
-                                                for="sliderMouseoverAction1"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                data-bs-title="Show the slider overlay with before and after labels."
-                                            >
-                                                <span>Show Overlay</span>
-                                            </label>
-
-                                            <input
-                                                type="radio"
-                                                class="btn-check"
-                                                name="sliderMouseoverAction"
-                                                id="sliderMouseoverAction2"
-                                                value="0"
-                                                onchange="updateBaieExtension( this )"
-                                                {% if is_overlay_enabled == False %}
-                                                    checked
-                                                {% endif %}
-                                                {% if is_free == True %}
-                                                    disabled
-                                                {% endif %}
-                                            >
-                                            <label
-                                                class="btn btn-outline-primary w-50"
-                                                for="sliderMouseoverAction2"
-                                            >
-                                                <span>Move Slider</span>
-                                            </label>
-                                        </div>
-                                        
+                                    <div class="form-check">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input" 
+                                            name="sliderMouseoverAction"
+                                            id="sliderMouseoverAction1"
+                                            value="1"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if mouseover_action == 1 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderMouseoverAction1"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            data-bs-title="Show the slider overlay with before and after labels."
+                                        >
+                                            <span>Show Overlay</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input"
+                                            name="sliderMouseoverAction"
+                                            id="sliderMouseoverAction2"
+                                            value="2"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if mouseover_action == 2 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderMouseoverAction2"
+                                        >
+                                            <span>Move Slider</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input"
+                                            name="sliderMouseoverAction"
+                                            id="sliderMouseoverAction3"
+                                            value="3"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if mouseover_action == 3 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderMouseoverAction3"
+                                        >
+                                            <span>None</span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -389,7 +409,7 @@
                                             {% if is_move_on_click_enabled == True %}
                                                 checked
                                             {% endif %}
-                                            {% if is_free == True or is_overlay_enabled == False %}
+                                            {% if is_free == True or mouseover_action == 2 %}
                                                 disabled
                                             {% endif %}
                                         >
@@ -401,6 +421,135 @@
                                             {% endif %}
                                         </label>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Animation-->
+                        <div class="container px-4 py-2">
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="sliderHandleAnimation" class="form-label"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-title="Choose what happens when you hover over the slider."
+                                    >
+                                    <strong>Animation</strong>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                    </svg>
+                                </label><br>
+                                <div class="form-check">
+                                    <input 
+                                        type="radio" 
+                                        class="form-check-input" 
+                                        name="sliderHandleAnimation"
+                                        id="sliderHandleAnimation0"
+                                        value="0"
+                                        onchange="updateBaieExtension( this )"
+                                        checked
+                                        {% if is_free == True %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="sliderHandleAnimation0"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        data-bs-title="Show the slider overlay with before and after labels."
+                                    >
+                                        <span>None</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="sliderHandleAnimation"
+                                        id="sliderHandleAnimation1"
+                                        value="1"
+                                        onchange="updateBaieExtension( this )"
+                                        {% if handle_animation == 1 %}
+                                            checked
+                                        {% endif %}
+                                        {% if is_free == True %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="sliderHandleAnimation1"
+                                    >
+                                        <span>Stretch</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="sliderHandleAnimation"
+                                        id="sliderHandleAnimation2"
+                                        value="2"
+                                        onchange="updateBaieExtension( this )"
+                                        {% if handle_animation == 2 %}
+                                            checked
+                                        {% endif %}
+                                        {% if is_free == True %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="sliderHandleAnimation2"
+                                    >
+                                        <span>Pulse</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="sliderHandleAnimation"
+                                        id="sliderHandleAnimation3"
+                                        value="3"
+                                        onchange="updateBaieExtension( this )"
+                                        {% if handle_animation == 3 %}
+                                            checked
+                                        {% endif %}
+                                        {% if is_free == True %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="sliderHandleAnimation3"
+                                    >
+                                        <span>Shake</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        type="radio"
+                                        class="form-check-input"
+                                        name="sliderHandleAnimation"
+                                        id="sliderHandleAnimation4"
+                                        value="4"
+                                        onchange="updateBaieExtension( this )"
+                                        {% if handle_animation == 4 %}
+                                            checked
+                                        {% endif %}
+                                        {% if is_free == True %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                    <label
+                                        class="form-check-label"
+                                        for="sliderHandleAnimation4"
+                                    >
+                                        <span>Grow</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -527,7 +676,7 @@
                     sliderMouseoverAction = Number( sliderMouseoverAction[ i ].value );
 
                     // Disable the click to move toggle if the user elected to move slider on hover.
-                    sliderMoveOnClickToggle[ 0 ].disabled = ( sliderMouseoverAction == 1 ) ? false : true;
+                    sliderMoveOnClickToggle[ 0 ].disabled = ( sliderMouseoverAction == 2 ) ? true : false;
                 }
             }
             
