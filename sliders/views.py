@@ -271,6 +271,7 @@ def settings( request ):
     slider_offset = 50
     slider_offset_float = 0.5
     mouseover_action = 1
+    handle_animation = 0
     is_move_on_click_enabled = False
     is_vertical = False
     is_free = False # False for dev environmet. Change to True for production.
@@ -301,6 +302,7 @@ def settings( request ):
                 slider_offset               = extension_in_db.offset
                 slider_offset_float         = extension_in_db.offset_float
                 mouseover_action            = extension_in_db.mouseover_action
+                handle_animation            = extension_in_db.handle_animation
                 is_move_on_click_enabled    = extension_in_db.is_move_on_click_enabled
                 is_vertical                 = extension_in_db.is_vertical
 
@@ -324,6 +326,7 @@ def settings( request ):
             "slider_offset_float": slider_offset_float,
             "is_vertical": is_vertical,
             "mouseover_action": mouseover_action,
+            "handle_animation": handle_animation,
             "is_move_on_click_enabled": is_move_on_click_enabled
         },
     )
@@ -354,6 +357,7 @@ def widget( request ):
     slider_orientation = 'horizontal'
     is_vertical = False
     mouseover_action = 1
+    handle_animation = 0
     slider_no_overlay = False
     slider_move_slider_on_hover = False
     is_move_on_click_enabled = False
@@ -397,6 +401,7 @@ def widget( request ):
                 extension_in_db.offset_float = request_data[ 'sliderOffsetFloat' ]
                 extension_in_db.is_vertical = is_vertical
                 extension_in_db.mouseover_action = request_data[ 'sliderMouseoverAction' ]
+                extension_in_db.handle_animation = request_data[ 'sliderHandleAnimation' ]
                 extension_in_db.is_move_on_click_enabled = request_data[ 'sliderMoveOnClickToggle' ]
 
                 # Add a new extension to the Extension table.
@@ -432,6 +437,7 @@ def widget( request ):
                     offset_float = request_data[ 'sliderOffsetFloat' ],
                     is_vertical = is_vertical,
                     mouseover_action = request_data[ 'sliderMouseoverAction' ],
+                    handle_animation = request_data[ 'sliderHandleAnimation' ],
                     is_move_on_click_enabled = request_data[ 'sliderMoveOnClickToggle' ]
                 )
 
@@ -477,15 +483,17 @@ def widget( request ):
             slider_offset = extension_in_db.offset
             slider_offset_float = extension_in_db.offset_float
             mouseover_action = extension_in_db.mouseover_action
+            handle_animation = extension_in_db.handle_animation
             is_move_on_click_enabled = extension_in_db.is_move_on_click_enabled
 
+            # Mouseover action logic.
             # Move slider on mouseover.
             if mouseover_action == 2:
                 slider_no_overlay = False
                 slider_move_slider_on_hover = True
 
             # Do nothing on mouseover.
-            if mouseover_action == 3:
+            if mouseover_action == 0:
                 slider_no_overlay = True
                 slider_move_slider_on_hover = False
 
@@ -508,6 +516,7 @@ def widget( request ):
             "slider_offset_float": slider_offset_float,
             "slider_orientation": slider_orientation,
             "slider_mouseover_action": int( mouseover_action ),
+            "slider_handle_animation": int( handle_animation ),
             "slider_no_overlay": int( slider_no_overlay ),
             "slider_move_slider_on_hover": int( slider_move_slider_on_hover ),
             "slider_move_on_click_toggle": int( is_move_on_click_enabled )

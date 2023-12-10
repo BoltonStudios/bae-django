@@ -38,6 +38,7 @@ class Extension( models.Model ):
     offset_float                = models.FloatField()
     is_vertical                 = models.BooleanField( default=False )
     mouseover_action            = models.IntegerField( default=1 )
+    handle_animation            = models.IntegerField( default=0 )
     is_move_on_click_enabled    = models.BooleanField( default=False )
     created                     = models.DateTimeField( auto_now_add=True )
     last_modified               = models.DateTimeField( auto_now=True )

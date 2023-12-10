@@ -4,7 +4,8 @@
     <!-- start content -->
     <div class="content">
 
-        <div id="{{extension_id}}-twentytwenty" class="twentytwenty-container" 
+        <div id="{{extension_id}}-twentytwenty"
+            class="twentytwenty-container"
             data-slider-id="{{extension_id}}"
             data-before-image="{{before_image}}"
             data-before-label-text="{{before_label_text}}"
@@ -16,6 +17,7 @@
             data-slider-offset-float="{{slider_offset_float}}"
             data-slider-orientation="{{slider_orientation}}"
             data-slider-mouseover-action="{{slider_mouseover_action}}"
+            data-slider-handle-animation="{{slider_handle_animation}}"
             data-slider-click-toggle="{{slider_move_on_click_toggle}}"
         >
             <!-- The before image is first -->
@@ -65,6 +67,7 @@
             slider.dataset.sliderOffsetFloat = e.sliderOffsetFloat;
             slider.dataset.sliderOrientation = e.sliderOrientation;
             slider.dataset.sliderMouseoverAction = e.sliderMouseoverAction;
+            slider.dataset.sliderHandleAnimation = e.sliderHandleAnimation;
             slider.dataset.sliderMoveOnClickToggle = e.sliderMoveOnClickToggle;
 
             // Update image attributes.
@@ -82,7 +85,7 @@
                     moveOnHover = true;
                     break;
                 // Do nothing on mouseover.
-                case 3:
+                case 0:
                     noOverlay = true;
                     moveOnHover = false;
                     break;
@@ -93,10 +96,11 @@
 
             // Reset TwentyTwenty elements.
             jQuery("#{{extension_id}}-twentytwenty").unwrap();
-            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-overlay").remove();
-            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-handle").remove();
-            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-before-label").remove();
-            jQuery("#{{extension_id}}-twentytwenty .twentytwenty-after-label").remove();
+            jQuery(".twentytwenty-overlay").remove();
+            jQuery(".twentytwenty-handle").remove();
+            jQuery(".twentytwenty-before-label").remove();
+            jQuery(".twentytwenty-after-label").remove();
+            jQuery(".pulser").remove();
 
             // Reinitialize TwentyTwenty.
             jQuery("#{{extension_id}}-twentytwenty").twentytwenty({
@@ -108,6 +112,13 @@
                 move_slider_on_hover: moveOnHover, // Boolean expressed as an int.
                 click_to_move: e.MoveOnClickToggle
             });
+
+            // Pulse animation
+            if( e.sliderHandleAnimation == 2 ){
+                
+                // Remove existing pulser element to handle.
+                jQuery( '.twentytwenty-handle' ).prepend( '<span class="pulser"></span>' );
+            }
 
             //
             publishWidgetExtension( e )
@@ -161,6 +172,7 @@
                     sliderOffsetFloat: slider.dataset.sliderOffsetFloat,
                     sliderOrientation: slider.dataset.sliderOrientation,
                     sliderMouseoverAction: slider.dataset.sliderMouseoverAction,
+                    sliderHandleAnimation: slider.dataset.sliderHandleAnimation,
                     sliderMoveOnClickToggle: slider.dataset.sliderMoveOnClickToggle
                 }),
                 headers: {
@@ -171,12 +183,6 @@
        </script>
 
        <script>
-        console.log( "slider_mouseover_action is..." );
-        console.log( Number( "{{slider_mouseover_action}}" ) );
-        console.log( "slider_no_overlay is..." );
-        console.log( Number( "{{slider_no_overlay}}" ) );
-        console.log( "slider_move_slider_on_hover is..." );
-        console.log( Number( "{{slider_move_slider_on_hover}}" ) );
         // Initialize TwentyTwenty
         $(function(){
             $("#{{extension_id}}-twentytwenty").twentytwenty({
@@ -190,5 +196,44 @@
             });
         });
        </script>
+
+       <script>
+        // Do something when the document is ready.
+        jQuery( document ).ready( function(){
+
+            // When the user clicks on the widget...
+            jQuery( '.twentytwenty-container' ).on( 'mousedown', function(){
+
+                // Add a clicked class that we will use to disable animations.
+                jQuery( this ).addClass( 'clicked' );
+            });
+        });
+       </script>
+       
+        {% if slider_handle_animation == 2 %}
+        <script>
+            // Do something when the document is ready.
+            jQuery( document ).ready( function(){
+                
+                // Add pulser element to handle.
+                jQuery( '.twentytwenty-handle' ).prepend( '<span class="pulser"></span>' );
+            });
+        </script>
+        {% endif %}
+
+        {% if slider_move_slider_on_hover == 1 %}
+        <script>
+            // Do something when the document is ready.
+            jQuery( document ).ready( function(){
+
+                // When the user clicks on the widget...
+                jQuery( '.twentytwenty-container' ).on( 'mouseover', function(){
+
+                    // Add a clicked class that we will use to disable animations.
+                    jQuery( this ).addClass( 'clicked' );
+                });
+            });
+        </script>
+        {% endif %}
     </div>
 {% endblock %}
