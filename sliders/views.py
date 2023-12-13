@@ -70,6 +70,7 @@ def app_wix( request ):
     return redirect( url )
 
 # Redirect URL (App Authorized, Complete Installation).
+@method_decorator( csrf_exempt )
 def redirect_wix( request ):
 
     # pylint: disable=too-many-locals
@@ -177,7 +178,7 @@ def redirect_wix( request ):
         print( "redirecting to " + complete_oauth_redirect_url )
         print( "=============================" )
 
-        return redirect( complete_oauth_redirect_url, permanent=True )
+        return redirect( complete_oauth_redirect_url )
 
     except ValueError as err:
         print( "Error getting token from Wix" )

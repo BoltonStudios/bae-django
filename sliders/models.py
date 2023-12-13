@@ -14,7 +14,6 @@ class User( models.Model ):
     site_id         = models.CharField( unique=True, max_length=255 )
     refresh_token   = models.TextField()
     is_free         = models.BooleanField()
-    did_cancel      = models.BooleanField( default=False )
     created         = models.DateTimeField( auto_now_add=True )
     last_modified   = models.DateTimeField( auto_now=True )
 
@@ -43,18 +42,6 @@ class Extension( models.Model ):
     mouseover_action            = models.IntegerField( default=1 )
     handle_animation            = models.IntegerField( default=0 )
     is_move_on_click_enabled    = models.BooleanField( default=False )
-    created                     = models.DateTimeField( auto_now_add=True )
-    last_modified               = models.DateTimeField( auto_now=True )
-
-    def __str__( self ):
-        return f'<slider { self.extension_id } in { self.instance_id }>'
-    
-# Define the extension model class.
-class Cancellation( models.Model ):
-    """
-    Class to define the Cancellation table.
-    """
-    instance_id                 = models.ForeignKey( User, on_delete=models.CASCADE )
     created                     = models.DateTimeField( auto_now_add=True )
     last_modified               = models.DateTimeField( auto_now=True )
 
