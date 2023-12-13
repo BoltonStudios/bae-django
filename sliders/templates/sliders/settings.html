@@ -45,6 +45,8 @@
                         aria-selected="false">
                         Support
                     </button>
+
+                    {% if is_free == True %}
                     <hr>
                     <a class="nav-link rounded-pill" 
                         id="v-pills-upgrade"
@@ -52,8 +54,8 @@
                         target="_blank">
                         Upgrade
                     </a>
+                    {% endif %}
 
-                    
                 </div>
                 <!--Tab Content-->
                 <div class="tab-content mx-auto vh-100 overflow-auto" id="v-pills-tabContent" style="width: 100%;">
@@ -223,6 +225,16 @@
                                 </div>
                             </div>
                         </div>
+
+                        {% if is_free == True %}
+                        <div class="container-fluid text-bg-light mb-2 px-4 pt-3 pb-2 border-top border-bottom">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="fw-light">Plus Options</h5>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
 
                         <!--Orientation-->
                         <div class="container px-4 py-2">
@@ -430,103 +442,104 @@
                             <div class="row">
                                 <div class="col-12">
                                     <label for="sliderHandleAnimation" class="form-label"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-title="Choose what happens when you hover over the slider."
-                                    >
-                                    <strong>Animation</strong>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                                    </svg>
-                                </label><br>
-                                <div class="form-check">
-                                    <input 
-                                        type="radio" 
-                                        class="form-check-input" 
-                                        name="sliderHandleAnimation"
-                                        id="sliderHandleAnimation0"
-                                        value="0"
-                                        onchange="updateBaieExtension( this )"
-                                        {% if handle_animation == 0 %}
-                                            checked
-                                        {% endif %}
-                                        {% if is_free == True %}
-                                            disabled
-                                        {% endif %}
-                                    >
-                                    <label
-                                        class="form-check-label"
-                                        for="sliderHandleAnimation0"
-                                    >
-                                        <span>None</span>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="sliderHandleAnimation"
-                                        id="sliderHandleAnimation1"
-                                        value="1"
-                                        onchange="updateBaieExtension( this )"
-                                        {% if handle_animation == 1 %}
-                                            checked
-                                        {% endif %}
-                                        {% if is_free == True %}
-                                            disabled
-                                        {% endif %}
-                                    >
-                                    <label
-                                        class="form-check-label"
-                                        for="sliderHandleAnimation1"
-                                    >
-                                        <span>Stretch</span>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="sliderHandleAnimation"
-                                        id="sliderHandleAnimation2"
-                                        value="2"
-                                        onchange="updateBaieExtension( this )"
-                                        {% if handle_animation == 2 %}
-                                            checked
-                                        {% endif %}
-                                        {% if is_free == True %}
-                                            disabled
-                                        {% endif %}
-                                    >
-                                    <label
-                                        class="form-check-label"
-                                        for="sliderHandleAnimation2"
-                                    >
-                                        <span>Pulse</span>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input
-                                        type="radio"
-                                        class="form-check-input"
-                                        name="sliderHandleAnimation"
-                                        id="sliderHandleAnimation3"
-                                        value="3"
-                                        onchange="updateBaieExtension( this )"
-                                        {% if handle_animation == 3 %}
-                                            checked
-                                        {% endif %}
-                                        {% if is_free == True %}
-                                            disabled
-                                        {% endif %}
-                                    >
-                                    <label
-                                        class="form-check-label"
-                                        for="sliderHandleAnimation3"
-                                    >
-                                        <span>See-saw</span>
-                                    </label>
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            data-bs-title="Choose what happens when you hover over the slider."
+                                        >
+                                        <strong>Animation</strong>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                        </svg>
+                                    </label><br>
+                                    <div class="form-check">
+                                        <input 
+                                            type="radio" 
+                                            class="form-check-input" 
+                                            name="sliderHandleAnimation"
+                                            id="sliderHandleAnimation0"
+                                            value="0"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if handle_animation == 0 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderHandleAnimation0"
+                                        >
+                                            <span>None</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input"
+                                            name="sliderHandleAnimation"
+                                            id="sliderHandleAnimation1"
+                                            value="1"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if handle_animation == 1 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderHandleAnimation1"
+                                        >
+                                            <span>Stretch</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input"
+                                            name="sliderHandleAnimation"
+                                            id="sliderHandleAnimation2"
+                                            value="2"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if handle_animation == 2 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderHandleAnimation2"
+                                        >
+                                            <span>Pulse</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input
+                                            type="radio"
+                                            class="form-check-input"
+                                            name="sliderHandleAnimation"
+                                            id="sliderHandleAnimation3"
+                                            value="3"
+                                            onchange="updateBaieExtension( this )"
+                                            {% if handle_animation == 3 %}
+                                                checked
+                                            {% endif %}
+                                            {% if is_free == True %}
+                                                disabled
+                                            {% endif %}
+                                        >
+                                        <label
+                                            class="form-check-label"
+                                            for="sliderHandleAnimation3"
+                                        >
+                                            <span>See-saw</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -566,6 +579,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

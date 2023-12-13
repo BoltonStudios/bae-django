@@ -216,7 +216,6 @@ def uninstall( request ):
 
         # Search the tables for records, filtering by instance ID.
         user = get_object_or_404( User, pk=instance_id )
-        extensions = Extension.objects.filter( instance_id = instance_id )
 
         if user:
 
@@ -226,16 +225,126 @@ def uninstall( request ):
             # Return feedback to the console.
             print( "Deleted user #" + instance_id )
 
-        for extension in extensions:
-
-            # Delete the user.
-            extension.delete()
-
-            # Return feedback to the console.
-            print( "Deleted extension #" + extension.extension_id )
-
         # Return feedback to the console.
         print( "Instance #" + instance_id + " uninstalled." )
+
+    # The app must return a 200 response upon successful receipt of a webhook.
+    # Source: https://dev.wix.com/docs/rest/articles/getting-started/webhooks
+    return HttpResponse( status=200 )
+
+# Update the users isFree status (Paid Plan Purchased)
+@method_decorator( csrf_exempt )
+def upgrade( request ):
+
+    """
+    Take action when the application recieves a POST request from the Paid Plan Purchased webhook.
+    
+    See documentation:
+    https://dev.wix.com/docs/rest/api-reference/app-management/apps/app-instance/instance-app-installed
+    """
+
+    # Initialize variables.
+    instance_id = ''
+    secret = conf_settings.WEBHOOK_PUBLIC_KEY
+
+    # If the user submitted a POST request...
+    if request.method == 'POST':
+
+        # Get the encoded data received.
+        encoded_jwt = request.body
+
+        # Decode the data using our secret.
+        data = jwt.decode( encoded_jwt, secret, algorithms=["RS256"] )
+
+        # Load the JSON payload.
+        request_data = json.loads( data['data'] )
+        product_data = json.loads( request_data['data'] )
+
+        logic.dump( request_data, "request_data" )
+
+        # Extract the instance ID
+        instance_id = request_data[ 'instanceId' ]
+        logic.dump( instance_id, "instance_id" )
+
+        instance_id = '729659d2-df1c-4504-b072-5b54b965ca31'
+        logic.dump( instance_id, "instance_id" )
+
+        # Extract the product ID
+        product_id = product_data[ 'vendorProductId' ]
+
+        # Search the tables for records, filtering by instance ID.
+        user = get_object_or_404( User, pk=instance_id )
+
+        # If the user exists and the product_id is not null.
+        if user and product_id:
+
+            # Delete the user.
+            user.is_free = False
+
+            # Add the new or updated user record to the User table.
+            user.save()
+
+            # Return feedback to the console.
+            print( "User #" + instance_id + " upgraded.")
+
+    # The app must return a 200 response upon successful receipt of a webhook.
+    # Source: https://dev.wix.com/docs/rest/articles/getting-started/webhooks
+    return HttpResponse( status=200 )
+
+# Update the users isFree status (Paid Plan Cancelled)
+@method_decorator( csrf_exempt )
+def downgrade( request ):
+
+    """
+    Take action when the application recieves a POST request from the Paid Plan Auto Renewal Cancelled webhook.
+    
+    See documentation:
+    https://dev.wix.com/docs/rest/api-reference/app-management/apps/app-instance/instance-app-installed
+    """
+
+    # Initialize variables.
+    instance_id = ''
+    secret = conf_settings.WEBHOOK_PUBLIC_KEY
+
+    # If the user submitted a POST request...
+    if request.method == 'POST':
+
+        # Get the encoded data received.
+        encoded_jwt = request.body
+
+        # Decode the data using our secret.
+        data = jwt.decode( encoded_jwt, secret, algorithms=["RS256"] )
+
+        # Load the JSON payload.
+        request_data = json.loads( data['data'] )
+        product_data = json.loads( request_data['data'] )
+
+        logic.dump( request_data, "request_data" )
+
+        # Extract the instance ID
+        instance_id = request_data[ 'instanceId' ]
+        logic.dump( instance_id, "instance_id" )
+
+        instance_id = '729659d2-df1c-4504-b072-5b54b965ca31'
+        logic.dump( instance_id, "instance_id" )
+
+        # Extract the product ID
+        product_id = product_data[ 'vendorProductId' ]
+
+        # Search the tables for records, filtering by instance ID.
+        user = get_object_or_404( User, pk=instance_id )
+
+        # If the user exists and the product_id is not null.
+        if user and product_id:
+
+            # Delete the user.
+            user.is_free = True
+
+            # Add the new or updated user record to the User table.
+            user.save()
+
+            # Return feedback to the console.
+            print( "User #" + instance_id + " downgraded.")
 
     # The app must return a 200 response upon successful receipt of a webhook.
     # Source: https://dev.wix.com/docs/rest/articles/getting-started/webhooks
@@ -292,7 +401,8 @@ def settings( request ):
             if extension_in_db is not None:
 
                 # Update the local variables with the requested_extension values.
-                instance_id                 = extension_in_db.instance_id
+                instance_id                 = extension_in_db.instance_id.instance_id
+                is_free                     = extension_in_db.instance_id.is_free
                 before_image                = extension_in_db.before_image
                 before_label_text           = extension_in_db.before_label_text
                 before_alt_text             = extension_in_db.before_alt_text
@@ -346,6 +456,7 @@ def widget( request ):
     # Initialize variables.
     requested_extension_id = None
     extension_in_db = None
+    is_free = True
     before_image = static('sliders/images/placeholder-1.svg')
     before_label_text = 'Before'
     before_alt_text = ''
@@ -467,13 +578,8 @@ def widget( request ):
         # Extension found.
         if extension_in_db is not None:
 
-            # If the user selected the vertical orientation...
-            if extension_in_db.is_vertical is True :
-
-                # Update the local variable for use in the widget template.
-                slider_orientation  = 'vertical'
-
-            # Update the local variables.
+            # Update the free local variables.
+            is_free = extension_in_db.instance_id.is_free
             before_image = extension_in_db.before_image
             before_label_text = extension_in_db.before_label_text
             before_alt_text = extension_in_db.before_alt_text
@@ -482,24 +588,33 @@ def widget( request ):
             after_alt_text = extension_in_db.after_alt_text
             slider_offset = extension_in_db.offset
             slider_offset_float = extension_in_db.offset_float
-            mouseover_action = extension_in_db.mouseover_action
-            handle_animation = extension_in_db.handle_animation
-            is_move_on_click_enabled = extension_in_db.is_move_on_click_enabled
 
-            # Mouseover action logic.
-            # Move slider on mouseover.
-            if mouseover_action == 2:
-                slider_no_overlay = False
-                slider_move_slider_on_hover = True
+            # If the user is on a paid plan.
+            if is_free is False :
 
-            # Do nothing on mouseover.
-            if mouseover_action == 0:
-                slider_no_overlay = True
-                slider_move_slider_on_hover = False
+                # Update the paid local variables.
+                mouseover_action = extension_in_db.mouseover_action
+                handle_animation = extension_in_db.handle_animation
+                is_move_on_click_enabled = extension_in_db.is_move_on_click_enabled
+
+                # Mouseover action logic.
+                # Move slider on mouseover.
+                if mouseover_action == 2:
+                    slider_no_overlay = False
+                    slider_move_slider_on_hover = True
+
+                # Do nothing on mouseover.
+                if mouseover_action == 0:
+                    slider_no_overlay = True
+                    slider_move_slider_on_hover = False
+
+                # If the user selected the vertical orientation...
+                if extension_in_db.is_vertical is True :
+
+                    # Update the local variable for use in the widget template.
+                    slider_orientation  = 'vertical'
 
     # Pass local variables to Django and render the template.
-    print( "int( mouseover_action ) is ")
-    print( int( mouseover_action ) )
     return render(
         request,
         "sliders/widget.html",
