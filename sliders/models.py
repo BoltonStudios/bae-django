@@ -19,9 +19,6 @@ class User( models.Model ):
 
     def __str__( self ):
         return f'<user { self.instance_id }>'
-    
-    def get_user():
-        return 1
 
 # Define the extension model class.
 class Extension( models.Model ):
