@@ -165,9 +165,9 @@ def redirect_wix( request ):
         user.save()
 
         # Mark the installation complete.
-        installation_complete_response = logic.finish_app_installation( access_token )
+        # installation_complete_response = logic.finish_app_installation( access_token )
 
-        logic.dump( installation_complete_response, 'installation_complete_response' )
+        # logic.dump( installation_complete_response, 'installation_complete_response' )
 
         # Close the consent window by redirecting the user to the following URL
         # with the user's access token.
