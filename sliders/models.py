@@ -12,7 +12,7 @@ class User( models.Model ):
     """
     instance_id     = models.CharField( primary_key=True, max_length=255 )
     site_id         = models.CharField( unique=True, max_length=255 )
-    user_id         = models.CharField( unique=True, max_length=255 )
+    user_id         = models.CharField( unique=True, max_length=255, null=True )
     refresh_token   = models.TextField()
     is_free         = models.BooleanField()
     created         = models.DateTimeField( auto_now_add=True )
