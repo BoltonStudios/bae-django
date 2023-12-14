@@ -6,6 +6,7 @@ Docstring
 import json
 import urllib.parse
 import jwt
+import requests
 
 # Django imports
 from django.http import HttpResponse, HttpResponseServerError
@@ -70,7 +71,6 @@ def app_wix( request ):
     return redirect( url )
 
 # Redirect URL (App Authorized, Complete Installation).
-@method_decorator( csrf_exempt )
 def redirect_wix( request ):
 
     # pylint: disable=too-many-locals
@@ -92,82 +92,44 @@ def redirect_wix( request ):
     # Get the authorization code from Wix.
     authorization_code = request.GET.get( 'code' )
 
+    # Print the authorization code to the console for debugging.
+    logic.dump( authorization_code, "authorization_code" )
+
     try:
         print( "Getting Tokens From Wix." )
         print( "=======================" )
 
+        # Initialize variables.
         auth_provider_base_url = conf_settings.AUTH_PROVIDER_BASE_URL
         app_secret = conf_settings.APP_SECRET
         app_id = conf_settings.APP_ID
 
-        # Get a refresh token from Wix.
-        refresh_token = json.loads(
-            logic.get_tokens_from_wix(
-                authorization_code,
-                auth_provider_base_url,
-                app_secret,
-                app_id
-            )
-        )[ 'refresh_token' ]
+        # Prepare request.
+        request_body_parameters = {
+            'code': authorization_code,
+            'client_secret': app_secret,
+            'client_id': app_id,
+            'grant_type': "authorization_code"
+        }
 
-        # Get an access token from Wix.
-        access_token = logic.get_access_token(
-            refresh_token,
-            auth_provider_base_url,
-            app_secret,
-            app_id
-        )
+        # Request an access token from Wix.
+        token_request = requests.post( auth_provider_base_url + "/access", json = request_body_parameters, timeout=2.50 ).text
 
-        # Get data about the installation of this app on the user's website.
-        app_instance = logic.get_app_instance(
-            refresh_token,
-            'https://www.wixapis.com/apps/v1/instance',
-            auth_provider_base_url,
-            app_secret,
-            app_id
-        )
+        # Parse response as JSON.
+        tokens = json.loads( token_request )
+
+        # Extract the access_token string from the response.
+        access_token = tokens[ 'access_token' ]
+        refresh_token = tokens[ 'refresh_token' ]
+
+        # Print the response to the console for debugging.
+        logic.dump( access_token, "access_token" )
+        logic.dump( refresh_token, "refresh_token" )
 
         # Construct the URL to Completes the OAuth flow.
         # https://dev.wix.com/api/rest/getting-started/authentication#getting-started_authentication_step-5a-app-completes-the-oauth-flow
         complete_oauth_redirect_url = "https://www.wix.com/installer/close-window?access_token="
         complete_oauth_redirect_url += access_token
-
-        # Extract data from the app instance.
-        instance_id = app_instance[ 'instance' ][ 'instanceId' ]
-        site_id = app_instance[ 'site' ][ 'siteId' ]
-        is_free = app_instance[ 'instance' ][ 'isFree' ]
-
-        # Search the User table for the instance ID (primary key)
-        #Question.objects.filter(pub_date__lte=timezone.now())
-        #selected_choice = question.choice_set.get(pk=request.POST["choice"])
-        user_in_db = User.objects.filter( pk=instance_id ).first()
-
-        # If the user does not exist in the table...
-        if user_in_db is None:
-
-            # Construct a new User record.
-            user = User(
-                instance_id = app_instance[ 'instance' ][ 'instanceId' ],
-                site_id = app_instance[ 'site' ][ 'siteId' ],
-                is_free = app_instance[ 'instance' ][ 'isFree' ],
-                refresh_token = refresh_token
-            )
-
-        else:
-
-            # Update the user record.
-            user = user_in_db
-            user.site_id = site_id
-            user.is_free = is_free
-            user.refresh_token = refresh_token
-
-        # Add the new or updated user record to the User table.
-        user.save()
-
-        # Mark the installation complete.
-        # installation_complete_response = logic.finish_app_installation( access_token )
-
-        # logic.dump( installation_complete_response, 'installation_complete_response' )
 
         # Close the consent window by redirecting the user to the following URL
         # with the user's access token.

@@ -39,12 +39,10 @@ def get_tokens_from_wix( auth_code, auth_provider_base_url, app_secret, app_id )
 
     # Request an access token.
     token_request = requests.post( url, json = body_parameters, timeout=2.50 )
+    dump( token_request.text, "token_request.text" )
 
-    # Extract the access token.
-    access_token = token_request.text
-
-    # Return the access token.
-    return access_token
+    # Return the resposne with access and refresh tokens.
+    return token_request.text
 
 def get_access_token( refresh_token, auth_provider_base_url, app_secret, app_id ):
 
